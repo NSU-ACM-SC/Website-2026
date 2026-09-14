@@ -67,7 +67,7 @@ export const HistoryMission: React.FC = () => {
         </div>
 
         {/* Timeline Breakdown */}
-        <div className="relative">
+        <div id="achievements" className="relative scroll-mt-28">
           <div className="flex items-center gap-3 mb-8">
             <Award className="h-6 w-6 text-[#f47b2b]" />
             <h3 className="font-heading font-black text-2xl uppercase text-black">

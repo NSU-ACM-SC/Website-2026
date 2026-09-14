@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { chapterEmail, chapterSocialLinks } from "@/data/contactData";
 import { SectionHeading } from "../ui/SectionHeading";
 import { NeoCard } from "../ui/NeoCard";
 import { NeoBadge } from "../ui/NeoBadge";
@@ -96,7 +97,7 @@ export const ContactForm: React.FC = () => {
                       Direct Email Inquiries
                     </div>
                     <p className="font-medium text-black/80">
-                      acm@northsouth.edu • chair@nsuacmsc.org
+                      <a href={`mailto:${chapterEmail}`} className="break-all hover:underline">{chapterEmail}</a>
                     </p>
                   </div>
                 </div>
@@ -113,6 +114,18 @@ export const ContactForm: React.FC = () => {
                       Sunday – Thursday: 10:00 AM – 06:00 PM (GMT+6)
                     </p>
                   </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t-2 border-black">
+                <h4 className="mb-3 font-display text-xs font-black uppercase">Follow NSU ACM SC</h4>
+                <div className="flex flex-wrap gap-3">
+                  {Object.entries(chapterSocialLinks).map(([label, href]) => (
+                    <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                      className="border-2 border-black bg-black px-3 py-2 font-display text-xs font-bold text-[#f1eee7] shadow-[3px_3px_0_#3392cc] transition-colors hover:bg-[#f47b2b] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5227FF]">
+                      {label}
+                    </a>
+                  ))}
                 </div>
               </div>
 

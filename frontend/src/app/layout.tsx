@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { PillNavbar } from "@/components/navbar/PillNavbar";
+import { Navbar } from "@/components/navbar/Navbar";
+import { GlobalCursor } from "@/components/cursor/GlobalCursor";
 import { Footer } from "@/components/footer/Footer";
 
 export const metadata: Metadata = {
@@ -46,7 +47,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col bg-[#f1eee7] text-black antialiased">
-        <PillNavbar />
+        <GlobalCursor />
+        <Navbar />
         <main className="flex-1">
           {children}
         </main>

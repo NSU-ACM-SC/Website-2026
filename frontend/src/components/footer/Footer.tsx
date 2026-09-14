@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { chapterEmail, chapterSocialLinks } from "@/data/contactData";
 import {
   MessageSquare,
   ArrowUpRight,
@@ -69,18 +70,19 @@ export const Footer: React.FC = () => {
               <div className="text-xs font-display font-black uppercase text-gray-400 mb-2">Connect Channels</div>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { icon: GithubIcon, label: "GitHub", href: "https://github.com/nsuacmsc" },
-                  { icon: LinkedinIcon, label: "LinkedIn", href: "https://linkedin.com/company/nsuacmsc" },
-                  { icon: FacebookIcon, label: "Facebook", href: "https://facebook.com/nsuacmsc" },
+                  { icon: GithubIcon, label: "GitHub", href: chapterSocialLinks.GitHub },
+                  { icon: LinkedinIcon, label: "LinkedIn", href: chapterSocialLinks.LinkedIn },
+                  { icon: FacebookIcon, label: "Facebook", href: chapterSocialLinks.Facebook },
                   { icon: MessageSquare, label: "Discord", href: "https://discord.gg/nsuacmsc" },
-                  { icon: YoutubeIcon, label: "YouTube", href: "https://youtube.com/@nsuacmsc" },
+                  { icon: YoutubeIcon, label: "YouTube", href: chapterSocialLinks.YouTube },
+                  { icon: Mail, label: "Email", href: `mailto:${chapterEmail}` },
                 ].map((s) => {
                   const Icon = s.icon;
                   return (
                     <a
                       key={s.label}
                       href={s.href}
-                      target="_blank"
+                      target={s.href.startsWith("mailto:") ? undefined : "_blank"}
                       rel="noopener noreferrer"
                       aria-label={s.label}
                       className="p-2 bg-[#1f1f1f] text-white hover:bg-[#f47b2b] hover:text-black border border-gray-700 hover:border-black transition-all shadow-[2px_2px_0px_0px_#3392cc]"
@@ -173,7 +175,7 @@ export const Footer: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-[#3392cc] shrink-0" />
-                <span>acm@northsouth.edu</span>
+                <a href={`mailto:${chapterEmail}`} className="break-all hover:underline">{chapterEmail}</a>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-[#5227FF] shrink-0" />
