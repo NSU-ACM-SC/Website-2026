@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@500;600;700;800&family=Syne:wght@700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #f1eee7;
+  --foreground: #000000;
+  --acm-orange: #f47b2b;
+  --acm-blue: #3392cc;
+  --acm-purple: #5227FF;
+  --acm-yellow: #FFDE59;
+  --acm-green: #00D084;
+  --acm-pink: #FF66C4;
+}
+
+@theme {
+  --color-acmbg: #f1eee7;
+  --color-acmblack: #000000;
+  --color-acmorange: #f47b2b;
+  --color-acmblue: #3392cc;
+  --color-acmpurple: #5227FF;
+  --color-acmyellow: #FFDE59;
+  --color-acmgreen: #00D084;
+  --color-acmpink: #FF66C4;
+  
+  --font-heading: 'Syne', 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: #f1eee7;
+  color: #000000;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #FFDE59;
+  color: #000000;
+}
+
+/* Neo-Brutalist Utility Classes */
+.font-heading {
+  font-family: 'Syne', 'Space Grotesk', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.font-body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Neo-Brutalist Hard Shadows */
+.neo-shadow-sm {
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.neo-shadow {
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-shadow-md {
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.neo-shadow-lg {
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+.neo-shadow-xl {
+  box-shadow: 12px 12px 0px 0px #000000;
+}
+
+.neo-shadow-orange {
+  box-shadow: 6px 6px 0px 0px #f47b2b;
+}
+
+.neo-shadow-blue {
+  box-shadow: 6px 6px 0px 0px #3392cc;
+}
+
+.neo-shadow-purple {
+  box-shadow: 6px 6px 0px 0px #5227FF;
+}
+
+/* Interactive Neo-Brutalist button & card states */
+.neo-interactive {
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neo-interactive:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px 0px #000000;
+}
+
+.neo-interactive:active {
+  transform: translate(0px, 0px);
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+/* Dot grid and Halftone Background Patterns */
+.bg-neo-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+}
+
+.bg-neo-dots {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.18) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+.bg-neo-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 0, 0, 0.05) 10px,
+    rgba(0, 0, 0, 0.05) 20px
+  );
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1eee7;
+  border-left: 2px solid #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000000;
+  border: 2px solid #f1eee7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f47b2b;
+}
