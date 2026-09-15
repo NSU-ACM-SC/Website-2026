@@ -35,7 +35,7 @@ export function DetailPage({
             alt={item.title}
             width={1400}
             height={720}
-            unoptimized
+            sizes="(max-width: 1240px) 100vw, 1176px"
           />
         </div>
       )}

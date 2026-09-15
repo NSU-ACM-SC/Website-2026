@@ -37,8 +37,8 @@ export function HeroSection() {
           src={eventItems[0].image!}
           width={720}
           height={780}
-          priority
-          unoptimized
+          sizes="(max-width: 700px) 100vw, 50vw"
+          preload
           alt="Collaborative workspace illustrating the chapter community"
         />
         <div className="hero-caption">
@@ -49,9 +49,10 @@ export function HeroSection() {
           <Image
             src="/assets/brand/acm-logo.webp"
             alt="NSU ACM SC"
-            width={48}
-            height={48}
-            style={{ width: "auto", height: "auto" }}
+            width={330}
+            height={280}
+            sizes="48px"
+            style={{ width: 48, height: "auto" }}
           />
         </div>
       </div>

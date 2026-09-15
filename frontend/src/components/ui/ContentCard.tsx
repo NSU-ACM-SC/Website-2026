@@ -18,9 +18,10 @@ export function ContentCard({
         <div className="news-card-heading">
           <Image
             src="/assets/brand/acm-logo.webp"
-            width={34}
-            height={34}
-            style={{ width: "auto", height: "auto" }}
+            width={330}
+            height={280}
+            sizes="34px"
+            style={{ width: 34, height: "auto" }}
             alt=""
           />
           <div>
@@ -40,7 +41,7 @@ export function ContentCard({
             alt={item.title}
             width={720}
             height={480}
-            unoptimized
+            sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw"
             className={item.image === "/assets/brand/acm-logo.webp" ? "asset-image" : ""}
           />
         ) : (

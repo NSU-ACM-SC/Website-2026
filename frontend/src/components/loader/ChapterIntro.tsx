@@ -26,9 +26,10 @@ export function ChapterIntro() {
       <Image
         src="/assets/brand/acm-logo.webp"
         alt=""
-        width={58}
-        height={58}
-        style={{ width: "auto", height: "auto" }}
+        width={330}
+        height={280}
+        sizes="58px"
+        style={{ width: 58, height: "auto" }}
       />
       <div className="intro-words">
         <span>Join.</span>

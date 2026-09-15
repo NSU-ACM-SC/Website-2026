@@ -17,7 +17,12 @@ export function MagazineCard({ issue }: MagazineCardProps) {
         className="magazine-cover"
         aria-label={`Read ${issue.issueTitle}`}
       >
-        <Image src={issue.coverImage} alt={issue.issueTitle} fill unoptimized />
+        <Image
+          src={issue.coverImage}
+          alt={issue.issueTitle}
+          fill
+          sizes="(max-width: 700px) 100vw, 33vw"
+        />
         <span>{issue.edition}</span>
       </Link>
       <div className="magazine-details">

@@ -6,9 +6,10 @@ export function Preloader() {
       <Image
         src="/assets/brand/acm-logo.webp"
         alt=""
-        width={70}
-        height={70}
-        style={{ width: "auto", height: "auto" }}
+        width={330}
+        height={280}
+        sizes="70px"
+        style={{ width: 70, height: "auto" }}
       />
       <div className="loader-track">
         <span />

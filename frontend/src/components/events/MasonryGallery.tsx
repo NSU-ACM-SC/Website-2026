@@ -106,7 +106,7 @@ export function MasonryGallery() {
                         ? 600
                         : 400
                   }
-                  unoptimized
+                  sizes="(max-width: 700px) 100vw, (max-width: 900px) 50vw, 33vw"
                 />
                 <span>
                   {item.title} ↗
@@ -171,7 +171,7 @@ export function MasonryGallery() {
               src={selected.imageUrl}
               width={1100}
               height={800}
-              unoptimized
+              sizes="90vw"
               alt={selected.title}
             />
             <p className="mt-4 text-sm">

@@ -19,9 +19,10 @@ export default function AboutPage() {
       <div className="statement">
         <Image
           src="/assets/brand/acm-logo.webp"
-          width={260}
-          height={260}
-          style={{ width: "auto", height: "auto" }}
+          width={330}
+          height={280}
+          sizes="260px"
+          style={{ width: 260, height: "auto" }}
           alt="NSU ACM Student Chapter logo"
         />
         <div>

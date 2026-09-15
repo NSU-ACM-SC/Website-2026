@@ -111,7 +111,7 @@ export default function HomePage() {
               alt={g.title}
               width={600}
               height={400}
-              unoptimized
+              sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw"
             />
             <span>{g.title} ↗</span>
           </Link>
