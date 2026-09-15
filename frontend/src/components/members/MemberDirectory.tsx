@@ -1,244 +1,274 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { membersData } from "@/data/membersData";
-import { MemberTable } from "./MemberTable";
-import { SectionHeading } from "../ui/SectionHeading";
-import { NeoBadge } from "../ui/NeoBadge";
-import { NeoButton } from "../ui/NeoButton";
+import type { PublicMember } from "@/data/memberGroups";
+import { roleOrder } from "@/data/teamsData";
 import {
-  Search,
-  Filter,
+  ArrowUpRight,
   Download,
+  LayoutGrid,
+  List,
   RotateCcw,
-  Users,
-  Heart,
-  ShieldAlert,
-  Sparkles,
+  Search,
 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { PublicMemberTable } from "./PublicMemberTable";
 
-export const MemberDirectory: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState<string>("All");
-  const [selectedSig, setSelectedSig] = useState<string>("All");
-  const [selectedBlood, setSelectedBlood] = useState<string>("All");
-  const [selectedStatus, setSelectedStatus] = useState<string>("All");
+type Props = { membersData: PublicMember[]; defaultView?: "cards" | "table" };
 
-  // Extract unique options
-  const teams = useMemo(() => {
-    const set = new Set(membersData.map((m) => m.team));
-    return ["All", ...Array.from(set)];
-  }, []);
+function valuesFor(
+  member: PublicMember,
+  key: "team" | "joinYear" | "position" | "sigs" | "status",
+) {
+  if (key === "sigs")
+    return member.sigs.length ? member.sigs.map((sig) => sig.name) : ["No SIG"];
+  if (key === "position")
+    return [
+      member.chapterRole,
+      member.teamRole,
+      ...member.sigs.map((sig) => sig.role),
+    ].filter((role): role is NonNullable<typeof role> => Boolean(role));
+  return [String(member[key])];
+}
 
-  const sigs = useMemo(() => {
-    const set = new Set(membersData.map((m) => m.sig));
-    return ["All", ...Array.from(set)];
-  }, []);
-
-  const bloodGroups = ["All", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-
-  // Filtered members computation
-  const filteredMembers = useMemo(() => {
-    return membersData.filter((member) => {
-      const matchesSearch =
-        searchQuery.trim() === "" ||
-        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.nsuId.includes(searchQuery) ||
-        member.ieeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.nsuEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.position.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesTeam = selectedTeam === "All" || member.team === selectedTeam;
-      const matchesSig = selectedSig === "All" || member.sig === selectedSig;
-      const matchesBlood = selectedBlood === "All" || member.bloodGroup === selectedBlood;
-      const matchesStatus = selectedStatus === "All" || member.status === selectedStatus;
-
-      return matchesSearch && matchesTeam && matchesSig && matchesBlood && matchesStatus;
-    });
-  }, [searchQuery, selectedTeam, selectedSig, selectedBlood, selectedStatus]);
-
-  const handleResetFilters = () => {
-    setSearchQuery("");
-    setSelectedTeam("All");
-    setSelectedSig("All");
-    setSelectedBlood("All");
-    setSelectedStatus("All");
-  };
-
-  const handleExportCSV = () => {
-    const headers = ["SL No", "IEEE ID", "NSUID", "Name", "Team", "Position", "SIG", "NSU Email", "Blood Group"];
-    const rows = filteredMembers.map((m, idx) => [
-      m.slNo || idx + 1,
-      m.ieeeId,
-      m.nsuId,
-      `"${m.name}"`,
-      `"${m.team}"`,
-      `"${m.position}"`,
-      `"${m.sig}"`,
-      m.nsuEmail,
-      m.bloodGroup,
-    ]);
-
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
-    const encodedUri = encodeURI(csvContent);
+export function MemberDirectory({ membersData, defaultView = "cards" }: Props) {
+  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [view, setView] = useState(defaultView);
+  const [page, setPage] = useState(1);
+  const [sort, setSort] = useState("role");
+  const fields = [
+    { key: "team", label: "Team" },
+    { key: "joinYear", label: "Year" },
+    { key: "position", label: "Role" },
+    { key: "sigs", label: "SIG" },
+    { key: "status", label: "Status" },
+  ] as const;
+  const filtered = membersData
+    .filter(
+      (member) =>
+        [
+          member.name,
+          member.team,
+          ...valuesFor(member, "position"),
+          member.sigs.map((sig) => sig.name).join(" / "),
+          member.joinYear,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(query.trim().toLowerCase()) &&
+        fields.every(
+          ({ key }) =>
+            !filters[key] || valuesFor(member, key).includes(filters[key]),
+        ),
+    )
+    .sort((a, b) =>
+      sort === "role"
+        ? roleOrder.indexOf(a.position) - roleOrder.indexOf(b.position) ||
+          a.name.localeCompare(b.name)
+        : sort === "year"
+          ? b.joinYear - a.joinYear || a.name.localeCompare(b.name)
+          : a.name.localeCompare(b.name),
+    );
+  const pages = Math.max(1, Math.ceil(filtered.length / 9));
+  const visible = filtered.slice((page - 1) * 9, page * 9);
+  function reset() {
+    setQuery("");
+    setFilters({});
+    setSort("role");
+    setPage(1);
+  }
+  function exportCsv() {
+    const cell = (value: string | number) =>
+      `"${String(value)
+        .replace(/^[=+@-]/, "'$&")
+        .replaceAll('"', '""')}"`;
+    const rows = [
+      [
+        "Name",
+        "Joined",
+        "Team",
+        "Chapter role",
+        "Team role",
+        "SIG roles",
+        "Status",
+      ],
+      ...filtered.map((member) => [
+        member.name,
+        member.joinYear,
+        member.team,
+        member.chapterRole || "",
+        member.teamRole,
+        member.sigs.map((sig) => `${sig.name}: ${sig.role}`).join(" / "),
+        member.status,
+      ]),
+    ];
+    const url = URL.createObjectURL(
+      new Blob(
+        ["\uFEFF" + rows.map((row) => row.map(cell).join(",")).join("\r\n")],
+        { type: "text/csv;charset=utf-8" },
+      ),
+    );
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `NSU_ACM_SC_Members_${Date.now()}.csv`);
-    document.body.appendChild(link);
+    link.href = url;
+    link.download = "chapter-public-members.csv";
     link.click();
-    document.body.removeChild(link);
-  };
-
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
   return (
-    <section className="py-12 bg-[#f1eee7]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          badge="PUBLIC ROSTER & REGISTRY"
-          badgeVariant="purple"
-          title="PUBLIC MEMBER"
-          highlightText="DIRECTORY"
-          highlightColor="orange"
-          subtitle="Explore the verified directory of undergraduate engineers, executive panels, and SIG researchers representing NSU ACM Student Chapter."
-          alignment="center"
-        />
-
-        {/* Quick Stats Matrix */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000]">
-            <div className="text-xs font-display font-black uppercase text-black/60">Total Roster</div>
-            <div className="font-heading font-black text-2xl text-black">{membersData.length}</div>
-          </div>
-          <div className="bg-white border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000]">
-            <div className="text-xs font-display font-black uppercase text-[#f47b2b]">Active Filtered</div>
-            <div className="font-heading font-black text-2xl text-[#f47b2b]">{filteredMembers.length}</div>
-          </div>
-          <div className="bg-white border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000]">
-            <div className="text-xs font-display font-black uppercase text-[#5227FF]">SIG Wings</div>
-            <div className="font-heading font-black text-2xl text-[#5227FF]">5 Focus Areas</div>
-          </div>
-          <div className="bg-white border-2 border-black p-4 shadow-[3px_3px_0px_0px_#000]">
-            <div className="text-xs font-display font-black uppercase text-[#00D084]">Blood Matrix</div>
-            <div className="font-heading font-black text-2xl text-black">8 Donor Types</div>
-          </div>
-        </div>
-
-        {/* Search & Filter Controls Box */}
-        <div className="bg-white border-[3px] border-black p-6 shadow-[6px_6px_0px_0px_#000000] mb-8 space-y-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Search Input */}
-            <div className="relative w-full md:max-w-md">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-black/60" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by Name, NSUID, IEEE ID, Email, Position..."
-                className="w-full pl-10 pr-4 py-2.5 bg-[#f1eee7] border-2 border-black font-body text-sm font-medium placeholder:text-black/50 focus:outline-none focus:bg-white focus:shadow-[3px_3px_0px_0px_#f47b2b]"
-              />
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="px-3.5 py-2.5 bg-[#f1eee7] border-2 border-black text-xs font-display font-black uppercase shadow-[2px_2px_0px_0px_#000] hover:bg-black hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset
-              </button>
-
-              <NeoButton
-                variant="orange"
-                size="sm"
-                onClick={handleExportCSV}
-                className="shadow-[3px_3px_0px_0px_#000]"
-              >
-                <Download className="h-3.5 w-3.5" />
-                Export CSV
-              </NeoButton>
-            </div>
-          </div>
-
-          {/* Filter Dropdown Selectors */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t-2 border-black/15">
-            {/* Team Filter */}
-            <div>
-              <label className="block text-xs font-display font-black uppercase text-black mb-1.5">
-                Filter by Team:
-              </label>
-              <select
-                value={selectedTeam}
-                onChange={(e) => setSelectedTeam(e.target.value)}
-                className="w-full py-2 px-3 bg-[#f1eee7] border-2 border-black font-display font-bold text-xs uppercase focus:outline-none focus:bg-white"
-              >
-                {teams.map((team) => (
-                  <option key={team} value={team}>
-                    {team}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* SIG Filter */}
-            <div>
-              <label className="block text-xs font-display font-black uppercase text-black mb-1.5">
-                Filter by SIG:
-              </label>
-              <select
-                value={selectedSig}
-                onChange={(e) => setSelectedSig(e.target.value)}
-                className="w-full py-2 px-3 bg-[#f1eee7] border-2 border-black font-display font-bold text-xs uppercase focus:outline-none focus:bg-white"
-              >
-                {sigs.map((sig) => (
-                  <option key={sig} value={sig}>
-                    {sig}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Blood Group Filter */}
-            <div>
-              <label className="block text-xs font-display font-black uppercase text-black mb-1.5">
-                Blood Group Registry:
-              </label>
-              <select
-                value={selectedBlood}
-                onChange={(e) => setSelectedBlood(e.target.value)}
-                className="w-full py-2 px-3 bg-[#f1eee7] border-2 border-black font-display font-bold text-xs uppercase focus:outline-none focus:bg-white"
-              >
-                {bloodGroups.map((bg) => (
-                  <option key={bg} value={bg}>
-                    {bg === "All" ? "All Blood Groups" : `Blood Group ${bg}`}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Status Filter */}
-            <div>
-              <label className="block text-xs font-display font-black uppercase text-black mb-1.5">
-                Member Status:
-              </label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full py-2 px-3 bg-[#f1eee7] border-2 border-black font-display font-bold text-xs uppercase focus:outline-none focus:bg-white"
-              >
-                <option value="All">All Statuses</option>
-                <option value="Active">Active Student</option>
-                <option value="Executive">Executive Committee</option>
-                <option value="Alumni">Alumni Member</option>
-                <option value="Advisor">Faculty Advisor</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Member Table Component */}
-        <MemberTable members={filteredMembers} />
+    <section aria-label="Member directory">
+      <p className="notice">
+        Preview roster. Roles and group assignments await chapter confirmation.
+      </p>
+      <div className="directory-toolbar">
+        <label className="search-field">
+          <Search size={18} aria-hidden="true" />
+          <input
+            aria-label="Search members"
+            placeholder="Search names, teams, roles or interests"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setPage(1);
+            }}
+          />
+        </label>
+        <button className="outline-button" onClick={reset}>
+          <RotateCcw size={16} />
+          Reset
+        </button>
+        <button
+          className="outline-button"
+          onClick={exportCsv}
+          disabled={!filtered.length}
+        >
+          <Download size={16} />
+          Export CSV
+        </button>
       </div>
+      <div className="directory-filters">
+        {fields.map(({ key, label }) => (
+          <label className="select-field" key={key}>
+            {label}
+            <select
+              value={filters[key] || ""}
+              onChange={(event) => {
+                setFilters({ ...filters, [key]: event.target.value });
+                setPage(1);
+              }}
+            >
+              <option value="">All</option>
+              {[
+                ...new Set(
+                  membersData.flatMap((member) => valuesFor(member, key)),
+                ),
+              ]
+                .sort()
+                .map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+            </select>
+          </label>
+        ))}
+        <label className="select-field">
+          Sort
+          <select
+            value={sort}
+            onChange={(event) => {
+              setSort(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="name">Name A–Z</option>
+            <option value="year">Newest joined</option>
+            <option value="role">Role hierarchy</option>
+          </select>
+        </label>
+      </div>
+      <div className="directory-toolbar">
+        <p className="result-count" aria-live="polite">
+          {filtered.length} members · Page {page} of {pages}
+        </p>
+        <div className="filter-tabs">
+          <button
+            aria-label="Card view"
+            aria-pressed={view === "cards"}
+            onClick={() => setView("cards")}
+          >
+            <LayoutGrid size={18} />
+          </button>
+          <button
+            aria-label="Table view"
+            aria-pressed={view === "table"}
+            onClick={() => setView("table")}
+          >
+            <List size={18} />
+          </button>
+        </div>
+      </div>
+      {!visible.length ? (
+        <div className="empty-state">
+          <h2>No members found.</h2>
+          <p>Try another name or clear your filters.</p>
+          <button className="outline-button" onClick={reset}>
+            Reset filters
+          </button>
+        </div>
+      ) : view === "table" ? (
+        <PublicMemberTable members={visible} />
+      ) : (
+        <div className="profile-grid">
+          {visible.map((member) => (
+            <Link
+              href={`/members/${member.id}`}
+              className="profile-card"
+              key={member.id}
+            >
+              <div className="profile-card-top">
+                <div className="profile-monogram">
+                  {member.name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((name) => name[0])
+                    .join("")}
+                </div>
+                <ArrowUpRight size={20} />
+              </div>
+              <p className="eyebrow">
+                {member.status} / {member.joinYear}
+              </p>
+              <h3>{member.name}</h3>
+              <p>
+                {member.position}
+                <br />
+                {member.team} · {member.teamRole}
+              </p>
+              <div className="tag-row">
+                {member.sigs.length ? (
+                  member.sigs.map((sig) => (
+                    <span key={sig.name}>
+                      {sig.name} · {sig.role}
+                    </span>
+                  ))
+                ) : (
+                  <span>No SIG</span>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+      <nav className="pagination" aria-label="Member pages">
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+          Previous
+        </button>
+        <span>
+          {page} / {pages}
+        </span>
+        <button disabled={page >= pages} onClick={() => setPage(page + 1)}>
+          Next
+        </button>
+      </nav>
     </section>
   );
-};
+}

@@ -1,12 +1,20 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import React from "react";
 
 interface NeoButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
-  variant?: "primary" | "secondary" | "orange" | "blue" | "purple" | "yellow" | "outline" | "ghost";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "orange"
+    | "blue"
+    | "purple"
+    | "yellow"
+    | "outline"
+    | "ghost";
   size?: "sm" | "md" | "lg" | "xl";
   isExternal?: boolean;
   children: React.ReactNode;
@@ -23,14 +31,21 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    primary: "bg-[#000000] text-white hover:bg-[#1f1f1f] shadow-[4px_4px_0px_0px_#f47b2b]",
-    secondary: "bg-[#ffffff] text-[#000000] border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#f8f6f0]",
-    orange: "bg-[#f47b2b] text-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#e06c1e]",
+    primary:
+      "bg-[#000000] text-white hover:bg-[#1f1f1f] shadow-[4px_4px_0px_0px_#f47b2b]",
+    secondary:
+      "bg-[#ffffff] text-[#000000] border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#f8f6f0]",
+    orange:
+      "bg-[#f47b2b] text-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#e06c1e]",
     blue: "bg-[#3392cc] text-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#287ab0]",
-    purple: "bg-[#5227FF] text-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#431dd6]",
-    yellow: "bg-[#FFDE59] text-black border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#ebd048]",
-    outline: "bg-transparent text-black border-2 border-black shadow-[3px_3px_0px_0px_#000000] hover:bg-black hover:text-white",
-    ghost: "bg-transparent text-black hover:bg-black/5 border border-transparent shadow-none",
+    purple:
+      "bg-[#5227FF] text-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#431dd6]",
+    yellow:
+      "bg-[#FFDE59] text-black border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#ebd048]",
+    outline:
+      "bg-transparent text-black border-2 border-black shadow-[3px_3px_0px_0px_#000000] hover:bg-black hover:text-white",
+    ghost:
+      "bg-transparent text-black hover:bg-black/5 border border-transparent shadow-none",
   };
 
   const sizeStyles = {
@@ -40,7 +55,8 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
     xl: "px-9 py-4 text-lg font-black font-display uppercase tracking-wider",
   };
 
-  const baseStyles = "inline-flex items-center justify-center gap-2 rounded-none transition-all duration-150 active:translate-x-0 active:translate-y-0 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer select-none";
+  const baseStyles =
+    "inline-flex items-center justify-center gap-2 rounded-none transition-all duration-150 active:translate-x-0 active:translate-y-0 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer select-none";
 
   if (href) {
     if (isExternal) {
@@ -49,7 +65,12 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}
+          className={cn(
+            baseStyles,
+            variantStyles[variant],
+            sizeStyles[size],
+            className,
+          )}
         >
           {children}
         </a>
@@ -58,7 +79,12 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
     return (
       <Link
         href={href}
-        className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}
+        className={cn(
+          baseStyles,
+          variantStyles[variant],
+          sizeStyles[size],
+          className,
+        )}
       >
         {children}
       </Link>
@@ -67,7 +93,12 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
 
   return (
     <button
-      className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}
+      className={cn(
+        baseStyles,
+        variantStyles[variant],
+        sizeStyles[size],
+        className,
+      )}
       {...props}
     >
       {children}

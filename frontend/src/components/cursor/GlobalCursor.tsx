@@ -1,7 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from "react";
 import { gsap } from "gsap";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 
 export interface TargetCursorProps {
   targetSelector?: string;
@@ -11,7 +17,8 @@ export interface TargetCursorProps {
   parallaxOn?: boolean;
 }
 
-const pointerQuery = "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
+const pointerQuery =
+  "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
 const subscribeToPointer = (onChange: () => void) => {
   const query = window.matchMedia(pointerQuery);
   query.addEventListener("change", onChange);
@@ -41,13 +48,18 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
   const dotRef = useRef<HTMLDivElement>(null);
 
   const isActiveRef = useRef(false);
-  const targetCornerPositionsRef = useRef<{ x: number; y: number }[] | null>(null);
+  const targetCornerPositionsRef = useRef<{ x: number; y: number }[] | null>(
+    null,
+  );
   const tickerFnRef = useRef<(() => void) | null>(null);
   const activeStrengthRef = useRef({ current: 0 });
 
   const enabled = useSyncExternalStore(
     subscribeToPointer,
-    () => window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches,
+    () =>
+      window.matchMedia(
+        "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+      ).matches,
     () => false,
   );
   const isMobile = !enabled;
@@ -69,15 +81,21 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       document.body.style.cursor = "none";
       document.documentElement.style.cursor = "none";
       forcedCursorStyleEl = document.createElement("style");
-      forcedCursorStyleEl.setAttribute("data-target-cursor-hide-native", "true");
-      forcedCursorStyleEl.textContent = "*, *::before, *::after { cursor: none !important; }";
+      forcedCursorStyleEl.setAttribute(
+        "data-target-cursor-hide-native",
+        "true",
+      );
+      forcedCursorStyleEl.textContent =
+        "*, *::before, *::after { cursor: none !important; }";
       document.head.appendChild(forcedCursorStyleEl);
     }
 
     const cursor = cursorRef.current;
     const dot = dotRef.current;
     const activeStrength = activeStrengthRef.current;
-    cornersRef.current = cursor.querySelectorAll<HTMLDivElement>(".target-cursor-corner");
+    cornersRef.current = cursor.querySelectorAll<HTMLDivElement>(
+      ".target-cursor-corner",
+    );
 
     let activeTarget: Element | null = null;
     let currentLeaveHandler: (() => void) | null = null;
@@ -101,15 +119,21 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       if (spinTl.current) {
         spinTl.current.kill();
       }
-      spinTl.current = gsap
-        .timeline({ repeat: -1 })
-        .to(cursor, { rotation: "+=360", duration: spinDuration, ease: "none" });
+      spinTl.current = gsap.timeline({ repeat: -1 }).to(cursor, {
+        rotation: "+=360",
+        duration: spinDuration,
+        ease: "none",
+      });
     };
 
     createSpinTimeline();
 
     const tickerFn = () => {
-      if (!targetCornerPositionsRef.current || !cursorRef.current || !cornersRef.current) {
+      if (
+        !targetCornerPositionsRef.current ||
+        !cursorRef.current ||
+        !cornersRef.current
+      ) {
         return;
       }
       const strength = activeStrength.current;
@@ -156,7 +180,8 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       const elementUnderMouse = document.elementFromPoint(mouseX, mouseY);
       const isStillOverTarget =
         elementUnderMouse &&
-        (elementUnderMouse === activeTarget || elementUnderMouse.closest(targetSelector) === activeTarget);
+        (elementUnderMouse === activeTarget ||
+          elementUnderMouse.closest(targetSelector) === activeTarget);
       if (!isStillOverTarget) {
         currentLeaveHandler?.();
       }
@@ -214,14 +239,24 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       targetCornerPositionsRef.current = [
         { x: rect.left - borderWidth, y: rect.top - borderWidth },
         { x: rect.right + borderWidth - cornerSize, y: rect.top - borderWidth },
-        { x: rect.right + borderWidth - cornerSize, y: rect.bottom + borderWidth - cornerSize },
-        { x: rect.left - borderWidth, y: rect.bottom + borderWidth - cornerSize },
+        {
+          x: rect.right + borderWidth - cornerSize,
+          y: rect.bottom + borderWidth - cornerSize,
+        },
+        {
+          x: rect.left - borderWidth,
+          y: rect.bottom + borderWidth - cornerSize,
+        },
       ];
 
       isActiveRef.current = true;
       gsap.ticker.add(tickerFnRef.current!);
 
-      gsap.to(activeStrength, { current: 1, duration: hoverDuration, ease: "power2.out" });
+      gsap.to(activeStrength, {
+        current: 1,
+        duration: hoverDuration,
+        ease: "power2.out",
+      });
 
       corners.forEach((corner, i) => {
         gsap.to(corner, {
@@ -250,17 +285,33 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
           ];
           const tl = gsap.timeline();
           localCorners.forEach((corner, index) => {
-            tl.to(corner, { x: positions[index].x, y: positions[index].y, duration: 0.3, ease: "power3.out" }, 0);
+            tl.to(
+              corner,
+              {
+                x: positions[index].x,
+                y: positions[index].y,
+                duration: 0.3,
+                ease: "power3.out",
+              },
+              0,
+            );
           });
         }
         resumeTimeout = setTimeout(() => {
           if (!activeTarget && cursorRef.current && spinTl.current) {
-            const currentRotation = gsap.getProperty(cursorRef.current, "rotation") as number;
+            const currentRotation = gsap.getProperty(
+              cursorRef.current,
+              "rotation",
+            ) as number;
             const normalizedRotation = currentRotation % 360;
             spinTl.current.kill();
             spinTl.current = gsap
               .timeline({ repeat: -1 })
-              .to(cursorRef.current, { rotation: "+=360", duration: spinDuration, ease: "none" });
+              .to(cursorRef.current, {
+                rotation: "+=360",
+                duration: spinDuration,
+                ease: "none",
+              });
             gsap.to(cursorRef.current, {
               rotation: normalizedRotation + 360,
               duration: spinDuration * (1 - normalizedRotation / 360),
@@ -287,7 +338,11 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       if (resumeTimeout) clearTimeout(resumeTimeout);
       document.removeEventListener("mouseleave", hideCursor);
       window.removeEventListener("blur", hideCursor);
-      gsap.killTweensOf([cursor, activeStrength, ...Array.from(cornersRef.current ?? [])]);
+      gsap.killTweensOf([
+        cursor,
+        activeStrength,
+        ...Array.from(cornersRef.current ?? []),
+      ]);
       if (dot) gsap.killTweensOf(dot);
       window.removeEventListener("mousemove", moveHandler);
       window.removeEventListener("mouseover", enterHandler as EventListener);
@@ -305,15 +360,26 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       targetCornerPositionsRef.current = null;
       activeStrength.current = 0;
     };
-  }, [targetSelector, spinDuration, moveCursor, constants, hideDefaultCursor, isMobile, hoverDuration, parallaxOn]);
+  }, [
+    targetSelector,
+    spinDuration,
+    moveCursor,
+    constants,
+    hideDefaultCursor,
+    isMobile,
+    hoverDuration,
+    parallaxOn,
+  ]);
 
   useEffect(() => {
     if (isMobile || !cursorRef.current || !spinTl.current) return;
     if (spinTl.current.isActive()) {
       spinTl.current.kill();
-      spinTl.current = gsap
-        .timeline({ repeat: -1 })
-        .to(cursorRef.current, { rotation: "+=360", duration: spinDuration, ease: "none" });
+      spinTl.current = gsap.timeline({ repeat: -1 }).to(cursorRef.current, {
+        rotation: "+=360",
+        duration: spinDuration,
+        ease: "none",
+      });
     }
   }, [spinDuration, isMobile]);
 

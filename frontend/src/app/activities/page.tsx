@@ -1,29 +1,36 @@
-import React from "react";
-import { Metadata } from "next";
-import { EventShowcase } from "@/components/events/EventShowcase";
-import { EventCalendar } from "@/components/events/EventCalendar";
-import { MasonryGallery } from "@/components/events/MasonryGallery";
-import { PressCoverage } from "@/components/events/PressCoverage";
+import { CardGrid } from "@/components/ui/CardGrid";
+import { PageIntro } from "@/components/ui/PageIntro";
+import { SectionNav } from "@/components/ui/SectionNav";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import {
+  achievementItems,
+  activitySections,
+  eventItems,
+} from "@/data/siteContent";
 
-export const metadata: Metadata = {
-  title: "Events & Workshops | NSU ACM Student Chapter",
-  description: "Explore flagship hackathons like HackStorm 2026, interactive event calendars, photo galleries, and press recognitions.",
-};
+export const metadata = { title: "Activities | NSU ACM SC" };
 
-export default function EventsPage() {
+export default function ActivitiesPage() {
   return (
-    <div className="flex flex-col">
-      {/* 1. Event Showcase & Workshops */}
-      <EventShowcase />
+    <div className="site-container">
+      <PageIntro
+        eyebrow="Activities"
+        title="Show up. Get involved."
+        description="From the first workshop to the next milestone: explore what the community is doing together."
+      />
+      <SectionNav label="activities categories" items={activitySections} />
 
-      {/* 2. Interactive Event Manager / Calendar Component */}
-      <EventCalendar />
-
-      {/* 3. Photo & Video Masonry Gallery */}
-      <MasonryGallery />
-
-      {/* 4. Press & Media Coverage */}
-      <PressCoverage />
+      <SectionTitle
+        number="01 / Featured activities"
+        title="Your next shared experience."
+      />
+      <CardGrid items={eventItems.slice(0, 3)} />
+      <SectionTitle
+        number="02 / Chapter progress"
+        title="Milestones, made together."
+        href="/activities/achievements"
+      />
+      <CardGrid items={achievementItems.slice(0, 3)} />
     </div>
   );
 }

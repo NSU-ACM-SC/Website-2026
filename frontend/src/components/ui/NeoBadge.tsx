@@ -1,9 +1,17 @@
-import React from "react";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 interface NeoBadgeProps {
   children: React.ReactNode;
-  variant?: "orange" | "blue" | "purple" | "yellow" | "green" | "pink" | "black" | "white";
+  variant?:
+    | "orange"
+    | "blue"
+    | "purple"
+    | "yellow"
+    | "green"
+    | "pink"
+    | "black"
+    | "white";
   size?: "sm" | "md";
   className?: string;
   icon?: React.ReactNode;
@@ -38,7 +46,7 @@ export const NeoBadge: React.FC<NeoBadgeProps> = ({
         "inline-flex items-center gap-1.5 rounded-none select-none",
         variantStyles[variant],
         sizeStyles[size],
-        className
+        className,
       )}
     >
       {icon && <span className="inline-block">{icon}</span>}

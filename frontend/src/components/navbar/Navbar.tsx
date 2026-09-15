@@ -1,27 +1,24 @@
 "use client";
 
+import { primaryNavigation } from "@/data/navigationData";
+import { isHrefActive, isRouterLink } from "@/lib/navigation";
+import type { NavigationItem } from "@/types";
+import { gsap } from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { gsap } from "gsap";
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from "react";
-
-export type PillNavChild = {
-  label: string;
-  href: string;
-  ariaLabel?: string;
-};
-
-export type PillNavItem = {
-  label: string;
-  href: string;
-  ariaLabel?: string;
-  children?: PillNavChild[];
-};
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+} from "react";
 
 export interface PillNavProps {
   logo: string;
   logoAlt?: string;
-  items: PillNavItem[];
+  items: NavigationItem[];
   activeHref?: string;
   className?: string;
   ease?: string;
@@ -32,53 +29,6 @@ export interface PillNavProps {
   onMobileMenuClick?: () => void;
   initialLoadAnimation?: boolean;
 }
-
-const navItems: PillNavItem[] = [
-  { href: "/", label: "Home" },
-  {
-    href: "/activities",
-    label: "Activities",
-    children: [
-      { href: "/activities#showcase", label: "Events" },
-      { href: "/activities#calendar", label: "Calendar" },
-      { href: "/teams&sig#achievements", label: "Achievements" },
-    ],
-  },
-  {
-    href: "/publications",
-    label: "Publications",
-    children: [
-      { href: "/publications#research", label: "Research" },
-      { href: "/publications#projects", label: "Projects" },
-      { href: "/publications#blogs", label: "Blogs" },
-      { href: "/activities#press", label: "News" },
-      { href: "/publications#magazines", label: "Magazine" },
-      { href: "/activities#gallery", label: "Gallery" },
-      { href: "/publications#projects", label: "Tool Kit" },
-      { href: "/publications#blogs", label: "Learning Resources" },
-    ],
-  },
-  { href: "/teams&sig", label: "Teams & SIGs" },
-  { href: "/contact", label: "Contact US" },
-  { href: "/teams&sig#history", label: "About" },
-  { href: "https://dash.nsuacmsc.org", label: "Join" },
-];
-const isExternalLink = (href: string) =>
-  href.startsWith("http://") ||
-  href.startsWith("https://") ||
-  href.startsWith("//") ||
-  href.startsWith("mailto:") ||
-  href.startsWith("tel:");
-
-const isRouterLink = (href?: string) => Boolean(href && !isExternalLink(href));
-
-const getPathFromHref = (href: string) => href.split("?")[0].split("#")[0];
-
-const isHrefActive = (pathname: string, href: string) => {
-  const path = getPathFromHref(href);
-  if (path === "/") return pathname === "/";
-  return pathname === path || pathname.startsWith(`${path}/`);
-};
 
 const PillNav = ({
   logo,
@@ -96,21 +46,33 @@ const PillNav = ({
 }: PillNavProps) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDesktopChildIndex, setOpenDesktopChildIndex] = useState<number | null>(null);
-  const [openMobileChildIndex, setOpenMobileChildIndex] = useState<number | null>(null);
+  const [openDesktopChildIndex, setOpenDesktopChildIndex] = useState<
+    number | null
+  >(null);
+  const [openMobileChildIndex, setOpenMobileChildIndex] = useState<
+    number | null
+  >(null);
 
   const circleRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const tlRefs = useRef<Array<gsap.core.Timeline | null>>([]);
   const activeTweenRefs = useRef<Array<gsap.core.Tween | null>>([]);
   const childCircleRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const childTlRefs = useRef<Record<string, gsap.core.Timeline | null>>({});
-  const childActiveTweenRefs = useRef<Record<string, gsap.core.Tween | null>>({});
+  const childActiveTweenRefs = useRef<Record<string, gsap.core.Tween | null>>(
+    {},
+  );
   const mobileCircleRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const mobileTlRefs = useRef<Array<gsap.core.Timeline | null>>([]);
   const mobileActiveTweenRefs = useRef<Array<gsap.core.Tween | null>>([]);
-  const mobileChildCircleRefs = useRef<Record<string, HTMLSpanElement | null>>({});
-  const mobileChildTlRefs = useRef<Record<string, gsap.core.Timeline | null>>({});
-  const mobileChildActiveTweenRefs = useRef<Record<string, gsap.core.Tween | null>>({});
+  const mobileChildCircleRefs = useRef<Record<string, HTMLSpanElement | null>>(
+    {},
+  );
+  const mobileChildTlRefs = useRef<Record<string, gsap.core.Timeline | null>>(
+    {},
+  );
+  const mobileChildActiveTweenRefs = useRef<
+    Record<string, gsap.core.Tween | null>
+  >({});
   const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
   const dropdownTweenRefs = useRef<Array<gsap.core.Tween | null>>([]);
   const closeDropdownTimerRef = useRef<number | null>(null);
@@ -134,9 +96,10 @@ const PillNav = ({
     const { width: w, height: h } = rect;
     if (w <= 0 || h <= 0) return null;
 
-    const R = (w * w / 4 + h * h) / (2 * h);
+    const R = ((w * w) / 4 + h * h) / (2 * h);
     const D = Math.ceil(2 * R) + 2;
-    const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - w * w / 4))) + 1;
+    const delta =
+      Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
     const originY = D - delta;
 
     circle.style.width = `${D}px`;
@@ -157,7 +120,11 @@ const PillNav = ({
 
     existingTimeline?.kill();
     const tl = gsap.timeline({ paused: true });
-    tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease, overwrite: "auto" }, 0);
+    tl.to(
+      circle,
+      { scale: 1.2, xPercent: -50, duration: 2, ease, overwrite: "auto" },
+      0,
+    );
 
     if (label) {
       tl.to(label, { y: -(h + 8), duration: 2, ease, overwrite: "auto" }, 0);
@@ -165,7 +132,11 @@ const PillNav = ({
 
     if (hoverLabel) {
       gsap.set(hoverLabel, { y: Math.ceil(h + 100), opacity: 0 });
-      tl.to(hoverLabel, { y: 0, opacity: 1, duration: 2, ease, overwrite: "auto" }, 0);
+      tl.to(
+        hoverLabel,
+        { y: 0, opacity: 1, duration: 2, ease, overwrite: "auto" },
+        0,
+      );
     }
 
     return tl;
@@ -265,7 +236,14 @@ const PillNav = ({
     gsap.fromTo(
       childItems,
       { y: 8, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.2, stagger: 0.04, ease: "power2.out", overwrite: "auto" },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.2,
+        stagger: 0.04,
+        ease: "power2.out",
+        overwrite: "auto",
+      },
     );
   };
 
@@ -323,11 +301,15 @@ const PillNav = ({
       tlRefs.current.forEach((tl) => tl?.kill());
       activeTweenRefs.current.forEach((tween) => tween?.kill());
       Object.values(childTlRefs.current).forEach((tl) => tl?.kill());
-      Object.values(childActiveTweenRefs.current).forEach((tween) => tween?.kill());
+      Object.values(childActiveTweenRefs.current).forEach((tween) =>
+        tween?.kill(),
+      );
       mobileTlRefs.current.forEach((tl) => tl?.kill());
       mobileActiveTweenRefs.current.forEach((tween) => tween?.kill());
       Object.values(mobileChildTlRefs.current).forEach((tl) => tl?.kill());
-      Object.values(mobileChildActiveTweenRefs.current).forEach((tween) => tween?.kill());
+      Object.values(mobileChildActiveTweenRefs.current).forEach((tween) =>
+        tween?.kill(),
+      );
       dropdownTweenRefs.current.forEach((tween) => tween?.kill());
       logoTweenRef.current?.kill();
     };
@@ -344,11 +326,35 @@ const PillNav = ({
     if (hamburger) {
       const lines = hamburger.querySelectorAll(".hamburger-line");
       if (isMobileMenuOpen) {
-        gsap.to(lines[0], { rotation: 45, y: 3, duration: 0.3, ease, overwrite: "auto" });
-        gsap.to(lines[1], { rotation: -45, y: -3, duration: 0.3, ease, overwrite: "auto" });
+        gsap.to(lines[0], {
+          rotation: 45,
+          y: 3,
+          duration: 0.3,
+          ease,
+          overwrite: "auto",
+        });
+        gsap.to(lines[1], {
+          rotation: -45,
+          y: -3,
+          duration: 0.3,
+          ease,
+          overwrite: "auto",
+        });
       } else {
-        gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.3, ease, overwrite: "auto" });
-        gsap.to(lines[1], { rotation: 0, y: 0, duration: 0.3, ease, overwrite: "auto" });
+        gsap.to(lines[0], {
+          rotation: 0,
+          y: 0,
+          duration: 0.3,
+          ease,
+          overwrite: "auto",
+        });
+        gsap.to(lines[1], {
+          rotation: 0,
+          y: 0,
+          duration: 0.3,
+          ease,
+          overwrite: "auto",
+        });
       }
     }
   }, [ease, isMobileMenuOpen]);
@@ -555,7 +561,12 @@ const PillNav = ({
                 height: "calc(var(--nav-h) + 8px)",
               }}
             >
-              <img src={logo} alt={logoAlt} ref={logoImgRef} className="block h-full w-full rounded-none object-contain" />
+              <img
+                src={logo}
+                alt={logoAlt}
+                ref={logoImgRef}
+                className="block h-full w-full rounded-none object-contain"
+              />
             </Link>
           ) : (
             <a
@@ -569,7 +580,12 @@ const PillNav = ({
                 height: "calc(var(--nav-h) + 8px)",
               }}
             >
-              <img src={logo} alt={logoAlt} ref={logoImgRef} className="block h-full w-full rounded-none object-contain" />
+              <img
+                src={logo}
+                alt={logoAlt}
+                ref={logoImgRef}
+                className="block h-full w-full rounded-none object-contain"
+              />
             </a>
           )}
 
@@ -581,7 +597,10 @@ const PillNav = ({
               height: "calc(var(--nav-h) + 8px)",
             }}
           >
-            <ul role="menubar" className="list-none flex items-stretch m-0 p-0 h-full" style={{ gap: "var(--pill-gap)" }}>
+            <ul
+              className="list-none flex items-stretch m-0 p-0 h-full"
+              style={{ gap: "var(--pill-gap)" }}
+            >
               {items.map((item, index) => {
                 const isActive = isHrefActive(resolvedActiveHref, item.href);
                 const hasChildren = Boolean(item.children?.length);
@@ -610,10 +629,15 @@ const PillNav = ({
                       }}
                     />
                     <span className="label-stack relative inline-flex items-center gap-1.5 leading-[1] z-[2]">
-                      <span className="pill-label relative z-[2] inline-block leading-[1]" style={{ willChange: "transform" }}>
+                      <span
+                        className="pill-label relative z-[2] inline-block leading-[1]"
+                        style={{ willChange: "transform" }}
+                      >
                         {item.label}
                       </span>
-                      {hasChildren && <span className="text-[10px] opacity-80">▾</span>}
+                      {hasChildren && (
+                        <span className="text-[10px] opacity-80">▾</span>
+                      )}
                       <span
                         className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
                         style={{
@@ -634,17 +658,44 @@ const PillNav = ({
                 return (
                   <li
                     key={item.href}
-                    role="none"
                     className="relative flex h-full"
                     onMouseEnter={() => {
                       clearDropdownCloseTimer();
                       handleEnter(index);
                     }}
                     onMouseLeave={() => handleLeave(index)}
+                    onFocus={(event) => {
+                      if (
+                        hasChildren &&
+                        !event.currentTarget.contains(event.relatedTarget)
+                      )
+                        openDesktopDropdown(index);
+                    }}
+                    onBlur={(event) => {
+                      if (!event.currentTarget.contains(event.relatedTarget))
+                        closeDesktopDropdown(index);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        closeDesktopDropdown(index);
+                        event.currentTarget
+                          .querySelector<HTMLAnchorElement>("a")
+                          ?.focus();
+                      }
+                      if (event.key === "ArrowDown" && hasChildren) {
+                        event.preventDefault();
+                        openDesktopDropdown(index);
+                        requestAnimationFrame(() =>
+                          dropdownRefs.current[index]
+                            ?.querySelector<HTMLAnchorElement>("a")
+                            ?.focus(),
+                        );
+                      }
+                    }}
                   >
                     {isRouterLink(item.href) ? (
                       <Link
-                        role="menuitem"
+                        aria-current={isActive ? "page" : undefined}
                         href={item.href}
                         onClick={() => closeDesktopDropdown()}
                         className={basePillClasses}
@@ -655,7 +706,7 @@ const PillNav = ({
                       </Link>
                     ) : (
                       <a
-                        role="menuitem"
+                        aria-current={isActive ? "page" : undefined}
                         href={item.href}
                         onClick={() => closeDesktopDropdown()}
                         className={basePillClasses}
@@ -681,10 +732,15 @@ const PillNav = ({
                         <div className="relative flex flex-col gap-2">
                           {item.children?.map((child, childIndex) => {
                             const childAnimKey = `${index}-${childIndex}-${child.href}`;
-                            const childIsActive = isHrefActive(pathname, child.href);
+                            const childIsActive = isHrefActive(
+                              pathname,
+                              child.href,
+                            );
                             const childPillStyle: CSSProperties = {
                               background: "var(--pill-bg, #000000)",
-                              color: childIsActive ? "#f1eee7" : "var(--pill-text, #f1eee7)",
+                              color: childIsActive
+                                ? "#f1eee7"
+                                : "var(--pill-text, #f1eee7)",
                               boxShadow: childIsActive
                                 ? "3px 3px 0 #5227FF"
                                 : "3px 3px 0 #3392cc",
@@ -697,14 +753,17 @@ const PillNav = ({
                                 onClick={() => closeDesktopDropdown()}
                                 className="pill-dropdown-item relative inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-none border-2 border-black px-4 text-xs font-black uppercase tracking-[0.14em] sm:text-sm sm:tracking-[0.15em]"
                                 style={childPillStyle}
-                                onMouseEnter={() => handleChildEnter(childAnimKey)}
-                                onMouseLeave={() => handleChildLeave(childAnimKey)}
+                                onMouseEnter={() =>
+                                  handleChildEnter(childAnimKey)
+                                }
+                                onMouseLeave={() =>
+                                  handleChildLeave(childAnimKey)
+                                }
                               >
                                 <span
                                   className="hover-circle absolute left-1/2 bottom-0 rounded-full z-[1] block pointer-events-none"
                                   style={{
-                                    background:
-                                      "#f47b2b",
+                                    background: "#f47b2b",
                                     willChange: "transform",
                                   }}
                                   aria-hidden="true"
@@ -737,10 +796,10 @@ const PillNav = ({
                 );
               })}
             </ul>
-        </nav>
+          </nav>
 
-        <button
-          type="button"
+          <button
+            type="button"
             ref={hamburgerRef}
             onClick={handleHamburgerClick}
             aria-label="Toggle menu"
@@ -755,9 +814,9 @@ const PillNav = ({
             <span className="flex h-10 w-10 flex-col items-center justify-center gap-1 rounded-none bg-black">
               <span className="hamburger-line h-0.5 w-4 origin-center rounded-none bg-[#f1eee7]" />
               <span className="hamburger-line h-0.5 w-4 origin-center rounded-none bg-[#f1eee7]" />
-          </span>
-        </button>
-      </div>
+            </span>
+          </button>
+        </div>
 
         {isMobileMenuOpen && (
           <button
@@ -784,10 +843,19 @@ const PillNav = ({
                 if (hasChildren) {
                   const isOpen = openMobileChildIndex === index;
                   return (
-                    <li key={item.href} className="rounded-none border-2 border-black bg-[#f1eee7]">
+                    <li
+                      key={item.href}
+                      className="rounded-none border-2 border-black bg-[#f1eee7]"
+                    >
                       <button
                         type="button"
-                        onClick={() => setOpenMobileChildIndex((prev) => (prev === index ? null : index))}
+                        aria-expanded={isOpen}
+                        aria-controls={`mobile-submenu-${index}`}
+                        onClick={() =>
+                          setOpenMobileChildIndex((prev) =>
+                            prev === index ? null : index,
+                          )
+                        }
                         onTouchStart={() => handleMobileEnter(index)}
                         onTouchEnd={() => handleMobileLeave(index)}
                         onTouchCancel={() => handleMobileLeave(index)}
@@ -795,7 +863,9 @@ const PillNav = ({
                         onMouseLeave={() => handleMobileLeave(index)}
                         className="relative overflow-hidden w-full flex items-center justify-between rounded-none border-2 border-black px-4 py-3 text-sm font-black tracking-[0.15em] uppercase"
                         style={{
-                          color: activeParent ? "#f1eee7" : "var(--pill-text, #f1eee7)",
+                          color: activeParent
+                            ? "#f1eee7"
+                            : "var(--pill-text, #f1eee7)",
                           background: "var(--pill-bg, #000000)",
                           boxShadow: activeParent
                             ? "3px 3px 0 #5227FF"
@@ -814,7 +884,9 @@ const PillNav = ({
                           }}
                         />
                         <span className="label-stack relative inline-flex items-center gap-1.5 leading-[1] z-[2]">
-                          <span className="pill-label relative z-[2] inline-block leading-[1]">{item.label}</span>
+                          <span className="pill-label relative z-[2] inline-block leading-[1]">
+                            {item.label}
+                          </span>
                           <span
                             className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
                             style={{
@@ -826,27 +898,50 @@ const PillNav = ({
                             {item.label}
                           </span>
                         </span>
-                        <span className={`relative z-[3] text-[11px] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>▾</span>
+                        <span
+                          className={`relative z-[3] text-[11px] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                        >
+                          ▾
+                        </span>
                       </button>
-                      <div className={`grid transition-all duration-200 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                      <div
+                        id={`mobile-submenu-${index}`}
+                        inert={!isOpen}
+                        className={`grid transition-all duration-200 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                      >
                         <div className="overflow-hidden">
                           <div className="pb-2 px-2 space-y-2">
                             {item.children?.map((child, childIndex) => {
                               const mobileChildAnimKey = `mobile-${index}-${childIndex}-${child.href}`;
-                              const childIsActive = isHrefActive(pathname, child.href);
+                              const childIsActive = isHrefActive(
+                                pathname,
+                                child.href,
+                              );
                               return (
                                 <Link
                                   key={child.label + child.href}
                                   href={child.href}
                                   onClick={closeMobileMenu}
-                                  onTouchStart={() => handleMobileChildEnter(mobileChildAnimKey)}
-                                  onTouchEnd={() => handleMobileChildLeave(mobileChildAnimKey)}
-                                  onTouchCancel={() => handleMobileChildLeave(mobileChildAnimKey)}
-                                  onMouseEnter={() => handleMobileChildEnter(mobileChildAnimKey)}
-                                  onMouseLeave={() => handleMobileChildLeave(mobileChildAnimKey)}
+                                  onTouchStart={() =>
+                                    handleMobileChildEnter(mobileChildAnimKey)
+                                  }
+                                  onTouchEnd={() =>
+                                    handleMobileChildLeave(mobileChildAnimKey)
+                                  }
+                                  onTouchCancel={() =>
+                                    handleMobileChildLeave(mobileChildAnimKey)
+                                  }
+                                  onMouseEnter={() =>
+                                    handleMobileChildEnter(mobileChildAnimKey)
+                                  }
+                                  onMouseLeave={() =>
+                                    handleMobileChildLeave(mobileChildAnimKey)
+                                  }
                                   className="relative overflow-hidden block rounded-none border-2 border-black px-3 py-2.5 text-sm font-black uppercase tracking-[0.14em]"
                                   style={{
-                                    color: childIsActive ? "#f1eee7" : "var(--pill-text, #f1eee7)",
+                                    color: childIsActive
+                                      ? "#f1eee7"
+                                      : "var(--pill-text, #f1eee7)",
                                     background: "var(--pill-bg, #000000)",
                                     boxShadow: childIsActive
                                       ? "3px 3px 0 #5227FF"
@@ -861,7 +956,9 @@ const PillNav = ({
                                     }}
                                     aria-hidden="true"
                                     ref={(el) => {
-                                      mobileChildCircleRefs.current[mobileChildAnimKey] = el;
+                                      mobileChildCircleRefs.current[
+                                        mobileChildAnimKey
+                                      ] = el;
                                     }}
                                   />
                                   <span className="label-stack relative inline-block leading-[1] z-[2]">
@@ -892,7 +989,7 @@ const PillNav = ({
                 if (isRouterLink(item.href)) {
                   return (
                     <li key={item.href}>
-              <Link
+                      <Link
                         href={item.href}
                         onClick={closeMobileMenu}
                         onTouchStart={() => handleMobileEnter(index)}
@@ -902,7 +999,9 @@ const PillNav = ({
                         onMouseLeave={() => handleMobileLeave(index)}
                         className="relative overflow-hidden block rounded-none border-2 border-black px-4 py-3 text-sm font-black tracking-[0.15em] uppercase"
                         style={{
-                          color: isHrefActive(pathname, item.href) ? "#f1eee7" : "var(--pill-text, #f1eee7)",
+                          color: isHrefActive(pathname, item.href)
+                            ? "#f1eee7"
+                            : "var(--pill-text, #f1eee7)",
                           background: "var(--pill-bg, #000000)",
                           boxShadow: isHrefActive(pathname, item.href)
                             ? "3px 3px 0 #5227FF"
@@ -921,7 +1020,9 @@ const PillNav = ({
                           }}
                         />
                         <span className="label-stack relative inline-block leading-[1] z-[2]">
-                          <span className="pill-label relative z-[2] inline-block leading-[1]">{item.label}</span>
+                          <span className="pill-label relative z-[2] inline-block leading-[1]">
+                            {item.label}
+                          </span>
                           <span
                             className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
                             style={{
@@ -933,7 +1034,7 @@ const PillNav = ({
                             {item.label}
                           </span>
                         </span>
-              </Link>
+                      </Link>
                     </li>
                   );
                 }
@@ -950,7 +1051,9 @@ const PillNav = ({
                       onMouseLeave={() => handleMobileLeave(index)}
                       className="relative overflow-hidden block rounded-none border-2 border-black px-4 py-3 text-sm font-black tracking-[0.15em] uppercase"
                       style={{
-                        color: isHrefActive(pathname, item.href) ? "#f1eee7" : "var(--pill-text, #f1eee7)",
+                        color: isHrefActive(pathname, item.href)
+                          ? "#f1eee7"
+                          : "var(--pill-text, #f1eee7)",
                         background: "var(--pill-bg, #000000)",
                         boxShadow: isHrefActive(pathname, item.href)
                           ? "3px 3px 0 #5227FF"
@@ -969,7 +1072,9 @@ const PillNav = ({
                         }}
                       />
                       <span className="label-stack relative inline-block leading-[1] z-[2]">
-                        <span className="pill-label relative z-[2] inline-block leading-[1]">{item.label}</span>
+                        <span className="pill-label relative z-[2] inline-block leading-[1]">
+                          {item.label}
+                        </span>
                         <span
                           className="pill-label-hover absolute left-0 top-0 z-[3] inline-block"
                           style={{
@@ -987,7 +1092,7 @@ const PillNav = ({
               })}
             </ul>
           </div>
-      )}
+        )}
       </div>
     </header>
   );
@@ -996,9 +1101,9 @@ const PillNav = ({
 export function Navbar() {
   return (
     <PillNav
-      logo="/ACM.webp"
+      logo="/assets/brand/acm-logo.webp"
       logoAlt="NSU ACM Student Chapter"
-      items={navItems}
+      items={primaryNavigation}
       baseColor="#f1eee7"
       pillColor="#000000"
       hoveredPillTextColor="#000000"
