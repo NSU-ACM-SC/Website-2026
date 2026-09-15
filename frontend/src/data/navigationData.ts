@@ -2,6 +2,7 @@ import type { NavigationItem } from "@/types";
 
 export const primaryNavigation: NavigationItem[] = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   {
     href: "/activities",
     label: "Activities",
@@ -38,5 +39,4 @@ export const primaryNavigation: NavigationItem[] = [
     ],
   },
   { href: "/contact", label: "Contact Us" },
-  { href: "/about", label: "About" },
 ];

@@ -23,7 +23,7 @@ export function HeroSection() {
           build things together. Find your people at NSU ACM SC.
         </p>
         <div className="hero-actions">
-          <Link className="solid-button" href="/activities">
+          <Link className="solid-button" href="/about">
             Explore the chapter <ArrowUpRight size={18} />
           </Link>
           <Link className="text-link" href="/join">
