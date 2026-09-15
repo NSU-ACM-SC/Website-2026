@@ -2,14 +2,22 @@ import { GithubIcon } from "@/components/ui/SocialIcons";
 import type { ProjectItem } from "@/types";
 import { ArrowUpRight, ExternalLink, GitFork, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 type ProjectCardProps = {
   project: ProjectItem;
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const detailsHref = `/publications/projects/${project.id}`;
+
   return (
     <article className="project-card">
+      <Link
+        href={detailsHref}
+        className="project-card-link"
+        aria-label={`View ${project.title}`}
+      />
       <div className="project-card-image">
         <Image src={project.coverImage} alt={project.title} fill unoptimized />
         <span>{project.category}</span>

@@ -128,7 +128,13 @@ export const toolkitItems: ContentItem[] = [
     image: "/assets/brand/acm-logo.webp",
     tags: ["WEBP", "Logo"],
     href: "/publications/toolkits/chapter-logo",
-    links: [{ label: "Download logo", href: "/assets/brand/acm-logo.webp", download: true }],
+    links: [
+      {
+        label: "Download logo",
+        href: "/assets/brand/acm-logo.webp",
+        download: true,
+      },
+    ],
   },
   {
     id: "brand-palette",
@@ -197,6 +203,15 @@ export const collections: Record<string, Collection> = {
       href: `/publications/projects/${p.id}`,
       sample: true,
       details: [p.description],
+      facts: {
+        Stars: String(p.stars ?? 0),
+        Forks: String(p.forks ?? 0),
+        Status: p.featured ? "Flagship project" : "Community project",
+      },
+      links: [
+        { label: "GitHub repository", href: p.githubUrl },
+        ...(p.liveUrl ? [{ label: "Live demo", href: p.liveUrl }] : []),
+      ],
     })),
   },
   "publications/blogs": {

@@ -1678,7 +1678,9 @@ button:disabled {
 .project-showcase { margin-top: 34px; }
 .project-list-heading { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 18px; font: 800 11px var(--font-display); text-transform: uppercase; }
 .project-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
-.project-card { display: flex; flex-direction: column; min-width: 0; background: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; }
+.project-card { position: relative; display: flex; flex-direction: column; min-width: 0; background: #fff; border: 2px solid #000; box-shadow: 6px 6px 0 #000; cursor: pointer; }
+.project-card-link { position: absolute; inset: 0; z-index: 1; }
+.project-card-link:focus-visible { outline: 4px solid var(--acm-purple); outline-offset: 4px; }
 .project-card-image { position: relative; aspect-ratio: 16 / 7; overflow: hidden; border-bottom: 2px solid #000; background: #111; }
 .project-card-image img { object-fit: cover; transition: none; }
 .project-card:hover .project-card-image img { transform: none; }
@@ -1695,7 +1697,7 @@ button:disabled {
 .project-engineers strong { text-transform: uppercase; }
 .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 13px 0 18px; }
 .project-tags span { padding: 4px 6px; background: #000; color: #fff; font: 800 8px var(--font-display); text-transform: uppercase; }
-.project-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid #000; padding-top: 15px; margin-top: auto; }
+.project-actions { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid #000; padding-top: 15px; margin-top: auto; }
 .project-github, .project-demo { display: inline-flex; align-items: center; gap: 6px; border: 2px solid #000; padding: 9px 11px; font: 800 9px var(--font-display); text-transform: uppercase; box-shadow: 3px 3px 0 #000; }
 .project-github { background: #000; color: #fff; }
 .project-github-icon { width: 15px; height: 15px; }
