@@ -11,20 +11,24 @@ export const eventsData: EventItem[] = [
     time: "09:00 AM - 09:00 PM (36 Hours Non-stop)",
     location: "NSU Plaza & ECE Innovation Labs, Block C",
     venueType: "Hybrid",
-    featuredImage: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&auto=format&fit=crop&q=80",
-    description: "NSU ACM SC's premier annual nationwide hackathon bringing 400+ top software developers, AI researchers, and hardware tinkerers. Tracks include Intelligent Autonomous Systems, Cyber Resilience, and Decentralized Public Infrastructure with BDT 500,000+ prize pool.",
+    featuredImage:
+      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&auto=format&fit=crop&q=80",
+    description:
+      "NSU ACM SC's premier annual nationwide hackathon bringing 400+ top software developers, AI researchers, and hardware tinkerers. Tracks include Intelligent Autonomous Systems, Cyber Resilience, and Decentralized Public Infrastructure with BDT 500,000+ prize pool.",
     speakers: [
       {
         name: "Dr. Ryan Vance",
         role: "Principal AI Scientist",
         company: "Google DeepMind",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+        avatar:
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
       },
       {
         name: "Tanvir Rahman",
         role: "Head of Engineering",
         company: "bKash Digital",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
       },
     ],
     registrationUrl: "https://dash.nsuacmsc.org/events/hackstorm-2026",
@@ -42,20 +46,23 @@ export const eventsData: EventItem[] = [
     time: "03:00 PM - 06:30 PM",
     location: "Auditorium 801, North South University",
     venueType: "Physical",
-    featuredImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
-    description: "A comprehensive technical workshop led by ACM SIGSAC exploring succinct non-interactive arguments of knowledge (zk-SNARKs), constraint systems, and secure multi-party computation.",
+    featuredImage:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
+    description:
+      "A comprehensive technical workshop led by ACM R&D Group exploring succinct non-interactive arguments of knowledge (zk-SNARKs), constraint systems, and secure multi-party computation.",
     speakers: [
       {
         name: "Farhan Ishraq Khan",
         role: "Security Researcher",
-        company: "NSU ACM SIGSAC",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
+        company: "NSU ACM R&D Group",
+        avatar:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
       },
     ],
     registrationUrl: "https://dash.nsuacmsc.org/events/zk-bootcamp",
     seatLimit: 120,
     registeredCount: 114,
-    tags: ["Cryptography", "Security", "ZKP", "SIGSAC"],
+    tags: ["Cryptography", "Security", "ZKP", "R&D Group"],
   },
   {
     id: "evt-03",
@@ -67,8 +74,10 @@ export const eventsData: EventItem[] = [
     time: "10:00 AM - 04:00 PM",
     location: "Computer Labs 401-404, SAC Building",
     venueType: "Physical",
-    featuredImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80",
-    description: "5 hours, 10 complex algorithmic challenges spanning segment trees, suffix automata, flows, and game theory with real-time DOMjudge scoreboard and post-contest editorial breakdown.",
+    featuredImage:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80",
+    description:
+      "5 hours, 10 complex algorithmic challenges spanning segment trees, suffix automata, flows, and game theory with real-time DOMjudge scoreboard and post-contest editorial breakdown.",
     registrationUrl: "https://dash.nsuacmsc.org/events/icpc-prep-2026",
     seatLimit: 180,
     registeredCount: 165,
@@ -84,8 +93,10 @@ export const eventsData: EventItem[] = [
     time: "04:00 PM - 07:00 PM",
     location: "Online via NSU ACM Discord Stage",
     venueType: "Online",
-    featuredImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
-    description: "Master parameter-efficient fine-tuning on consumer GPUs using open-source weights (Llama 3 & Mistral) for Bengali language processing tasks.",
+    featuredImage:
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
+    description:
+      "Master parameter-efficient fine-tuning on consumer GPUs using open-source weights (Llama 3 & Mistral) for Bengali language processing tasks.",
     seatLimit: 300,
     registeredCount: 300,
     tags: ["AI", "NLP", "LLM", "PyTorch"],
@@ -100,8 +111,10 @@ export const eventsData: EventItem[] = [
     time: "05:00 PM - 07:30 PM",
     location: "NSU Gallery 102",
     venueType: "Physical",
-    featuredImage: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&auto=format&fit=crop&q=80",
-    description: "A deep dive into distributed tracing with OpenTelemetry, gRPC protocols, Prometheus monitoring, and container networking in production environments.",
+    featuredImage:
+      "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&auto=format&fit=crop&q=80",
+    description:
+      "A deep dive into distributed tracing with OpenTelemetry, gRPC protocols, Prometheus monitoring, and container networking in production environments.",
     seatLimit: 150,
     registeredCount: 150,
     tags: ["Go", "Kubernetes", "DevOps", "Backend"],
@@ -114,86 +127,107 @@ export const galleryMedia: GalleryMedia[] = [
     title: "HackStorm 2025 Grand Finale Arena",
     category: "Hackathon",
     year: "2025",
-    imageUrl: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&auto=format&fit=crop&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&auto=format&fit=crop&q=80",
     aspectRatio: "landscape",
-    description: "Over 80 teams presenting live software builds on stage to executive industry judges.",
+    description:
+      "Over 80 teams presenting live software builds on stage to executive industry judges.",
   },
   {
     id: "gal-02",
-    title: "SIGAI Workshop on Neural Computer Vision",
+    title: "R&D Group Workshop on Neural Computer Vision",
     category: "Workshop",
     year: "2026",
-    imageUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80",
     aspectRatio: "portrait",
-    description: "Hands-on model architecture walkthrough with NSU ACM AI research cohort.",
+    description:
+      "Hands-on model architecture walkthrough with NSU ACM AI research cohort.",
   },
   {
     id: "gal-03",
     title: "Competitive Programming Contest Arena",
     category: "Contest",
     year: "2025",
-    imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80",
     aspectRatio: "square",
-    description: "Final 10 minutes of intense algorithmic debugging before the scoreboard freeze.",
+    description:
+      "Final 10 minutes of intense algorithmic debugging before the scoreboard freeze.",
   },
   {
     id: "gal-04",
     title: "NSU ACM SC Annual Orientation & Gala",
     category: "Social",
     year: "2025",
-    imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&auto=format&fit=crop&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&auto=format&fit=crop&q=80",
     aspectRatio: "landscape",
-    description: "Welcoming 200+ recruited members into our research and engineering families.",
+    description:
+      "Welcoming 200+ recruited members into our research and engineering families.",
   },
   {
     id: "gal-05",
     title: "Hardware Hack & IoT Telemetry Sprint",
     category: "Hardware",
     year: "2026",
-    imageUrl: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80",
     aspectRatio: "portrait",
-    description: "Soldering custom PCB boards and flashing ESP32 microcontrollers in Makerspace.",
+    description:
+      "Soldering custom PCB boards and flashing ESP32 microcontrollers in Makerspace.",
   },
   {
     id: "gal-06",
     title: "Global Tech Leaders Fireside Panel",
     category: "Seminar",
     year: "2025",
-    imageUrl: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&auto=format&fit=crop&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&auto=format&fit=crop&q=80",
     aspectRatio: "landscape",
-    description: "Keynote dialogue on career roadmaps in distributed systems and AI safety.",
+    description:
+      "Keynote dialogue on career roadmaps in distributed systems and AI safety.",
   },
 ];
 
 export const pressItems: PressItem[] = [
   {
     id: "press-01",
-    headline: "NSU ACM Student Chapter Wins Outstanding Regional Chapter Recognition at ACM Global Summit",
+    headline:
+      "NSU ACM Student Chapter Wins Outstanding Regional Chapter Recognition at ACM Global Summit",
     outlet: "The Daily Star Tech",
     date: "July 2025",
     link: "https://thedailystar.net",
-    coverImage: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&auto=format&fit=crop&q=80",
-    snippet: "North South University ACM SC recognized for pioneering student-led research symposiums and extensive nationwide hackathons fostering next-generation computational talent.",
+    coverImage:
+      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&auto=format&fit=crop&q=80",
+    snippet:
+      "North South University ACM SC recognized for pioneering student-led research symposiums and extensive nationwide hackathons fostering next-generation computational talent.",
     featured: true,
   },
   {
     id: "press-02",
-    headline: "HackStorm 2025 Gathers 1,200+ Student Engineers Across 30 Universities at NSU Campus",
+    headline:
+      "HackStorm 2025 Gathers 1,200+ Student Engineers Across 30 Universities at NSU Campus",
     outlet: "Dhaka Tribune",
     date: "November 2025",
     link: "https://dhakatribune.com",
-    coverImage: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80",
-    snippet: "From automated flood prediction models to secure decentralized identity apps, university innovators pitch multi-million taka startup prototypes during the 36-hour sprint.",
+    coverImage:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80",
+    snippet:
+      "From automated flood prediction models to secure decentralized identity apps, university innovators pitch multi-million taka startup prototypes during the 36-hour sprint.",
     featured: true,
   },
   {
     id: "press-03",
-    headline: "NSU ACM Research Wing Publishes 4 Papers in Top IEEE & ACM Computational Conferences",
+    headline:
+      "NSU ACM Research Wing Publishes 4 Papers in Top IEEE & ACM Computational Conferences",
     outlet: "The Business Standard",
     date: "February 2026",
     link: "https://tbsnews.net",
-    coverImage: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=80",
-    snippet: "Undergraduate student researchers at NSU ACM SC contribute key advancements in low-resource language processing and federated learning protocols.",
+    coverImage:
+      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=80",
+    snippet:
+      "Undergraduate student researchers at NSU ACM SC contribute key advancements in low-resource language processing and federated learning protocols.",
     featured: false,
   },
 ];

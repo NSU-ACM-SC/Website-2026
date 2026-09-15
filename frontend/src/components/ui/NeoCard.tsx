@@ -1,5 +1,5 @@
-import React from "react";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 interface NeoCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -45,7 +45,7 @@ export const NeoCard: React.FC<NeoCardProps> = ({
         variantStyles[variant],
         shadowStyles[shadow],
         interactiveStyles,
-        className
+        className,
       )}
       {...props}
     >

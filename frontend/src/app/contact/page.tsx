@@ -1,29 +1,61 @@
-import React from "react";
-import { Metadata } from "next";
+import { CampusLocationMap } from "@/components/home/CampusLocationMap";
+import { ContactForm } from "@/components/contact/ContactForm";
 import { FAQAccordion } from "@/components/contact/FAQAccordion";
 import { NewsletterSubscribe } from "@/components/contact/NewsletterSubscribe";
-import { ContactForm } from "@/components/contact/ContactForm";
+import { SocialDock } from "@/components/contact/SocialDock";
+import { PageIntro } from "@/components/ui/PageIntro";
+import { chapterEmail } from "@/data/contactData";
+import { ArrowUpRight } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Contact & Community | NSU ACM Student Chapter",
-  description: "Get in touch with executive officers, explore recruitment FAQs, subscribe to technical dispatches, or book office visits.",
-};
+export const metadata = { title: "Contact | NSU ACM SC" };
 
 export default function ContactPage() {
   return (
-    <div className="flex flex-col">
-      {/* 1. Contact Form & Direct Headquarters Base */}
-      <ContactForm />
-
-      {/* 2. FAQ Accordion with Search & Category Tabs */}
+    <div className="site-container">
+      <PageIntro
+        eyebrow="Contact US"
+        title="Good work starts with a hello."
+        description="Have a question, an idea for a collaboration, or an opportunity to share? Get in touch with the chapter."
+      />
+      <div className="detail-columns">
+        <ContactForm />
+        <aside className="detail-aside">
+          <h3>Find us here.</h3>
+          <dl>
+            <div>
+              <dt>Campus</dt>
+              <dd>
+                North South University
+                <br />
+                Bashundhara, Dhaka, Bangladesh
+              </dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd>
+                <a className="text-link" href={`mailto:${chapterEmail}`}>
+                  {chapterEmail}
+                </a>
+              </dd>
+            </div>
+          </dl>
+          <div className="mt-6">
+            <SocialDock />
+          </div>
+          <a
+            className="text-link mt-6"
+            href="https://www.google.com/maps/search/?api=1&query=North+South+University+Dhaka"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open campus map <ArrowUpRight size={16} />
+          </a>
+        </aside>
+      </div>
+      <CampusLocationMap />
       <FAQAccordion />
-
-      {/* 3. Newsletter Subscription Component */}
-      <section className="py-16 bg-[#f1eee7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <NewsletterSubscribe />
-        </div>
-      </section>
+      <ContactForm kind="question" />
+      <NewsletterSubscribe />
     </div>
   );
 }

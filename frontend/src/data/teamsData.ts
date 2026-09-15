@@ -1,14 +1,16 @@
-import { ExecutiveMember, SIGGroup } from "@/types";
+import { ExecutiveMember } from "@/types";
 
 export const executiveMembers: ExecutiveMember[] = [
   {
     id: "exec-01",
     name: "Tanzimul Haque Shafi",
-    role: "Chairperson",
+    role: "Chair",
     nsuId: "2011832042",
     email: "tanzimul.haque@northsouth.edu",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80",
-    quote: "Building a culture of relentless engineering excellence and community empowerment at NSU.",
+    image:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80",
+    quote:
+      "Building a culture of relentless engineering excellence and community empowerment at NSU.",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     department: "Dept. of Electrical & Computer Engineering",
@@ -18,11 +20,13 @@ export const executiveMembers: ExecutiveMember[] = [
   {
     id: "exec-02",
     name: "Sadia Afrin Chowdhury",
-    role: "Vice Chairperson",
+    role: "Vice Chair",
     nsuId: "2021445042",
     email: "sadia.afrin01@northsouth.edu",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&auto=format&fit=crop&q=80",
-    quote: "Bridging the gap between cutting-edge academia and real-world technological impact.",
+    image:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&auto=format&fit=crop&q=80",
+    quote:
+      "Bridging the gap between cutting-edge academia and real-world technological impact.",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     department: "Dept. of Electrical & Computer Engineering",
@@ -32,11 +36,13 @@ export const executiveMembers: ExecutiveMember[] = [
   {
     id: "exec-03",
     name: "Mahir Faisal Rahman",
-    role: "General Secretary",
+    role: "Secretary",
     nsuId: "2112903042",
     email: "mahir.faisal@northsouth.edu",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80",
-    quote: "Ensuring structured operational velocity and high-impact member engagement.",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80",
+    quote:
+      "Ensuring structured operational velocity and high-impact member engagement.",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     department: "Dept. of Electrical & Computer Engineering",
@@ -49,8 +55,10 @@ export const executiveMembers: ExecutiveMember[] = [
     role: "Treasurer",
     nsuId: "2121789042",
     email: "nafisa.anjum02@northsouth.edu",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80",
-    quote: "Stewarding our resources with transparent fiscal precision to maximize event capabilities.",
+    image:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80",
+    quote:
+      "Stewarding our resources with transparent fiscal precision to maximize event capabilities.",
     linkedin: "https://linkedin.com",
     department: "School of Business & Economics",
     tenure: "2025 - 2026",
@@ -59,11 +67,13 @@ export const executiveMembers: ExecutiveMember[] = [
   {
     id: "exec-05",
     name: "Abrar Hossain Niloy",
-    role: "Joint Secretary (Technical)",
+    role: "Webmaster",
     nsuId: "2131554042",
     email: "abrar.niloy@northsouth.edu",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80",
-    quote: "Empowering developers to deploy open-source systems that scale beyond classrooms.",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80",
+    quote:
+      "Empowering developers to deploy open-source systems that scale beyond classrooms.",
     github: "https://github.com",
     department: "Dept. of Electrical & Computer Engineering",
     tenure: "2025 - 2026",
@@ -72,11 +82,13 @@ export const executiveMembers: ExecutiveMember[] = [
   {
     id: "exec-06",
     name: "Sumaiya Binte Alam",
-    role: "Joint Secretary (Creative & Comms)",
+    role: "Membership Chair",
     nsuId: "2231201042",
     email: "sumaiya.alam03@northsouth.edu",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80",
-    quote: "Crafting a visual brand language that resonates with global tech aesthetics.",
+    image:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80",
+    quote:
+      "Crafting a visual brand language that resonates with global tech aesthetics.",
     linkedin: "https://linkedin.com",
     department: "Dept. of Electrical & Computer Engineering",
     tenure: "2025 - 2026",
@@ -84,118 +96,135 @@ export const executiveMembers: ExecutiveMember[] = [
   },
 ];
 
-export const sigGroups: SIGGroup[] = [
+export const teamNames = [
+  "Corporate",
+  "Promotion",
+  "Provision",
+  "Publication",
+] as const;
+export const sigGroups = [
   {
-    id: "sig-ai-ml",
-    name: "Special Interest Group on Artificial Intelligence",
-    shortCode: "SIGAI",
-    tagline: "Frontier Machine Learning, NLP & Computer Vision Research",
-    description: "SIGAI at NSU focuses on deep learning architectures, generative AI, LLM evaluation, autonomous perception, and deploying robust AI systems for socio-economic challenges in South Asia.",
-    iconName: "BrainCircuit",
-    badgeColor: "bg-[#5227FF] text-white",
-    leadName: "Zarin Tasnim Promi",
-    leadRole: "SIG Lead & Researcher",
-    leadImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&auto=format&fit=crop&q=80",
-    meetingDay: "Wednesdays 6:00 PM (Hybrid)",
-    projectsCount: 14,
-    membersCount: 88,
-    topics: ["Large Language Models", "Vision Transformers", "Bioinformatics ML", "Model Quantization"],
-    bannerGradient: "from-purple-900 to-indigo-900",
+    id: "research-and-development",
+    name: "Research and Development Group (R&D)",
+    shortCode: "R&D",
+    description: "Research, experimentation, and development.",
   },
   {
-    id: "sig-cybersec",
-    name: "Special Interest Group on Security, Audit & Control",
-    shortCode: "SIGSAC",
-    tagline: "Offensive Security, Threat Modeling & Cryptography",
-    description: "SIGSAC trains members in vulnerability assessment, capture-the-flag (CTF) challenges, network forensics, binary exploitation, and cloud infrastructure security compliance.",
-    iconName: "ShieldAlert",
-    badgeColor: "bg-[#f47b2b] text-white",
-    leadName: "Farhan Ishraq Khan",
-    leadRole: "SIG Lead & Red Team Captain",
-    leadImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
-    meetingDay: "Thursdays 5:30 PM (Lab 402)",
-    projectsCount: 9,
-    membersCount: 64,
-    topics: ["Web Application Penetration", "Reverse Engineering", "Zero Trust Architecture", "CTF Training"],
-    bannerGradient: "from-orange-950 to-amber-900",
+    id: "web",
+    name: "Web Group (Web)",
+    shortCode: "Web",
+    description: "Web development and digital experiences.",
   },
   {
-    id: "sig-cp",
-    name: "Special Interest Group on Algorithms & Computation",
-    shortCode: "SIGACT",
-    tagline: "Competitive Programming & Mathematical Problem Solving",
-    description: "Dedicated to training world-class competitive programmers for ICPC, National Collegiate Contests, Codeforces, and algorithmic olympiads through rigorous weekly problem sets.",
-    iconName: "Code2",
-    badgeColor: "bg-[#3392cc] text-white",
-    leadName: "Kazi Rayhan Uddin",
-    leadRole: "Competitive Wing Lead",
-    leadImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
-    meetingDay: "Saturdays 3:00 PM (Contest Arena)",
-    projectsCount: 8,
-    membersCount: 120,
-    topics: ["Graph Theory & Flow", "Dynamic Programming", "Number Theory", "Advanced Data Structures"],
-    bannerGradient: "from-sky-950 to-blue-900",
+    id: "admin",
+    name: "Admin Group",
+    shortCode: "Admin",
+    description: "Administrative coordination and chapter records.",
   },
   {
-    id: "sig-dev-cloud",
-    name: "Special Interest Group on Software Engineering & Cloud",
-    shortCode: "SIGSOFT",
-    tagline: "Distributed Systems, Next-Gen Web & Cloud Native Ops",
-    description: "Building production software, microservices, open-source developer tooling, and modern distributed full-stack platforms while mastering DevOps and Kubernetes workflows.",
-    iconName: "Server",
-    badgeColor: "bg-black text-white",
-    leadName: "Abrar Hossain Niloy",
-    leadRole: "Systems & Cloud Lead",
-    leadImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80",
-    meetingDay: "Sundays 7:00 PM (Discord / NSU Room 605)",
-    projectsCount: 22,
-    membersCount: 145,
-    topics: ["Kubernetes & Docker", "High-Throughput APIs", "Next.js & React 19", "Database Internals"],
-    bannerGradient: "from-zinc-900 to-black",
+    id: "media-and-documentation",
+    name: "Media and Documentation Group (M&D)",
+    shortCode: "M&D",
+    description: "Media coverage and documentation.",
   },
   {
-    id: "sig-robotics-iot",
-    name: "Special Interest Group on Embedded Systems & Robotics",
-    shortCode: "SIGBED",
-    tagline: "Hardware Acceleration, Edge Computing & IoT Automations",
-    description: "Hands-on hardware lab for microcontrollers, ROS2, autonomous robotics, FPGA acceleration, and IoT telemetry clusters deployed for industrial smart sensing.",
-    iconName: "Cpu",
-    badgeColor: "bg-[#00D084] text-black",
-    leadName: "Ahsan Habib Rifat",
-    leadRole: "Hardware & Robotics Lead",
-    leadImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
-    meetingDay: "Tuesdays 4:30 PM (ECE Makerspace)",
-    projectsCount: 11,
-    membersCount: 52,
-    topics: ["ROS 2 Robotics", "ESP32 & STM32", "Edge AI TPU", "PCB Design & Soldering"],
-    bannerGradient: "from-emerald-950 to-teal-900",
+    id: "design-and-decor",
+    name: "Design and Decor Group (D&D)",
+    shortCode: "D&D",
+    description: "Visual design and event decoration.",
   },
+  {
+    id: "cultural",
+    name: "Cultural Group",
+    shortCode: "Cultural",
+    description: "Cultural activities and creative participation.",
+  },
+] as const;
+export const teamRoles = [
+  "Sub Executive",
+  "InCharge",
+  "Senior Member",
+  "General Member",
+  "Probationary Member",
+] as const;
+export const sigRoles = [
+  "Coordinator",
+  "Moderator",
+  "Senior Member",
+  "General Member",
+  "Probationary Member",
+] as const;
+export const executiveRoles = [
+  "Chair",
+  "Vice Chair",
+  "Secretary",
+  "Treasurer",
+  "Membership Chair",
+  "Webmaster",
+] as const;
+export const roleOrder = [
+  "Faculty Advisor",
+  "Chair",
+  "Vice Chair",
+  "Secretary",
+  "Treasurer",
+  "Membership Chair",
+  "Webmaster",
+  "Sub Executive",
+  "Coordinator",
+  "InCharge",
+  "Moderator",
+  "Senior Member",
+  "General Member",
+  "Probationary Member",
+] as const;
+export const roleHierarchy = [
+  "Faculty Advisor (FA)",
+  "Executive Body (EB): Chair, Vice Chair, Secretary, Treasurer, Membership Chair, Webmaster",
+  "Sub Executive — Team",
+  "Coordinator — SIG",
+  "InCharge — Team",
+  "Moderator — SIG",
+  "Senior Member — Team / SIG",
+  "General Member — Team / SIG",
+  "Probationary Member — Team / SIG",
+];
+
+export const organizationSections = [
+  { href: "/teams&sig", label: "Overview" },
+  { href: "/teams&sig/team", label: "Team" },
+  { href: "/teams&sig/sig", label: "SIG" },
 ];
 
 export const clubMilestones = [
   {
     year: "2014",
     title: "Official ACM Chapter Chartering",
-    description: "NSU ACM Student Chapter was chartered by ACM Headquarters (New York), becoming one of the earliest official student chapters in Bangladesh.",
+    description:
+      "NSU ACM Student Chapter was chartered by ACM Headquarters (New York), becoming one of the earliest official student chapters in Bangladesh.",
   },
   {
     year: "2017",
     title: "National Tech Carnival Milestone",
-    description: "Hosted 45+ universities and 2,000+ delegates in Bangladesh's largest student-run ACM tech symposium with 10 parallel competitive tracks.",
+    description:
+      "Hosted 45+ universities and 2,000+ delegates in Bangladesh's largest student-run ACM tech symposium with 10 parallel competitive tracks.",
   },
   {
     year: "2020",
     title: "Launch of ACM-W & Virtual Innovation Labs",
-    description: "Expanded ACM-W wing to bridge gender disparity in computing, alongside 5 specialized Special Interest Groups (SIGs) with open curriculum repositories.",
+    description:
+      "Expanded ACM-W wing to bridge gender disparity in computing, alongside collaborative learning activities and open curriculum repositories.",
   },
   {
     year: "2023",
     title: "Global ICPC World Finals & Research Output",
-    description: "NSU ACM SC alumni and teams represented the country at global ICPC stages and published 15+ peer-reviewed papers across IEEE and ACM venues.",
+    description:
+      "NSU ACM SC alumni and teams represented the country at global ICPC stages and published 15+ peer-reviewed papers across IEEE and ACM venues.",
   },
   {
     year: "2025-2026",
     title: "Next-Gen Open Cloud & Student Incubator",
-    description: "Deployed student-hosted compute clusters, an automated member portal `dash.nsuacmsc.org`, and sponsored over 300+ students in regional hackathons.",
+    description:
+      "Deployed student-hosted compute clusters, an automated member portal `dash.nsuacmsc.org`, and sponsored over 300+ students in regional hackathons.",
   },
 ];

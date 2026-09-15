@@ -1,10 +1,11 @@
-import React from "react";
 import { cn } from "@/lib/utils";
+import React from "react";
 import { NeoBadge } from "./NeoBadge";
 
 interface SectionHeadingProps {
   badge?: string;
-  badgeVariant?: "orange" | "blue" | "purple" | "yellow" | "green" | "pink" | "black";
+  badgeVariant?:
+    "orange" | "blue" | "purple" | "yellow" | "green" | "pink" | "black";
   title: string;
   highlightText?: string;
   highlightColor?: "orange" | "blue" | "purple" | "yellow";
@@ -30,14 +31,23 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   };
 
   const highlightStyles = {
-    orange: "bg-[#f47b2b] text-white px-2 py-0.5 inline-block -rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
+    orange:
+      "bg-[#f47b2b] text-white px-2 py-0.5 inline-block -rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
     blue: "bg-[#3392cc] text-white px-2 py-0.5 inline-block rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
-    purple: "bg-[#5227FF] text-white px-2 py-0.5 inline-block -rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
-    yellow: "bg-[#FFDE59] text-black px-2 py-0.5 inline-block rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
+    purple:
+      "bg-[#5227FF] text-white px-2 py-0.5 inline-block -rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
+    yellow:
+      "bg-[#FFDE59] text-black px-2 py-0.5 inline-block rotate-1 border-2 border-black shadow-[3px_3px_0px_0px_#000000]",
   };
 
   return (
-    <div className={cn("flex flex-col max-w-3xl mb-12", alignStyles[alignment], className)}>
+    <div
+      className={cn(
+        "flex flex-col max-w-3xl mb-12",
+        alignStyles[alignment],
+        className,
+      )}
+    >
       {badge && (
         <div className="mb-3">
           <NeoBadge variant={badgeVariant} size="md">
@@ -48,7 +58,9 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
       <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-black uppercase text-black tracking-tight leading-[1.08]">
         {title}{" "}
         {highlightText && (
-          <span className={highlightStyles[highlightColor]}>{highlightText}</span>
+          <span className={highlightStyles[highlightColor]}>
+            {highlightText}
+          </span>
         )}
       </h2>
       {subtitle && (

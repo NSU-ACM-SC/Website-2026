@@ -1,4 +1,41 @@
-export type BloodGroup = "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+export type BloodGroup =
+  "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+
+export type NavigationChild = {
+  label: string;
+  href: string;
+  ariaLabel?: string;
+};
+
+export type NavigationItem = NavigationChild & {
+  children?: NavigationChild[];
+};
+
+export type TeamName = "Corporate" | "Promotion" | "Provision" | "Publication";
+export type SIGName =
+  | "Research and Development Group (R&D)"
+  | "Web Group (Web)"
+  | "Admin Group"
+  | "Media and Documentation Group (M&D)"
+  | "Design and Decor Group (D&D)"
+  | "Cultural Group";
+export type MemberLevel =
+  "Senior Member" | "General Member" | "Probationary Member";
+export type TeamRole = "Sub Executive" | "InCharge" | MemberLevel;
+export type SIGRole = "Coordinator" | "Moderator" | MemberLevel;
+export type ChapterRole =
+  | "Faculty Advisor"
+  | "Chair"
+  | "Vice Chair"
+  | "Secretary"
+  | "Treasurer"
+  | "Membership Chair"
+  | "Webmaster";
+export type Role = ChapterRole | TeamRole | SIGRole;
+export interface SIGMembership {
+  name: SIGName;
+  role: SIGRole;
+}
 
 export interface Member {
   id: string;
@@ -9,9 +46,11 @@ export interface Member {
   nsuEmail: string;
   personalEmail?: string;
   bloodGroup: BloodGroup;
-  team: string;
-  position: string;
-  sig: string;
+  team: TeamName;
+  teamRole: TeamRole;
+  chapterRole?: ChapterRole;
+  position: Role;
+  sigs: SIGMembership[];
   avatar?: string;
   linkedin?: string;
   github?: string;
@@ -36,27 +75,17 @@ export interface ExecutiveMember {
 
 export interface SIGGroup {
   id: string;
-  name: string;
+  name: SIGName;
   shortCode: string;
-  tagline: string;
   description: string;
-  iconName: string;
-  badgeColor: string;
-  leadName: string;
-  leadRole: string;
-  leadImage: string;
-  meetingDay: string;
-  projectsCount: number;
-  membersCount: number;
-  topics: string[];
-  bannerGradient: string;
 }
 
 export interface EventItem {
   id: string;
   title: string;
   subtitle: string;
-  category: "Workshop" | "Hackathon" | "Seminar" | "Tech Talk" | "Contest" | "Social";
+  category:
+    "Workshop" | "Hackathon" | "Seminar" | "Tech Talk" | "Contest" | "Social";
   status: "Upcoming" | "Happening Now" | "Completed";
   date: string;
   time: string;
@@ -104,6 +133,7 @@ export interface ResearchPaper {
   conference: string;
   year: number;
   abstract: string;
+  coverImage: string;
   researchGateUrl?: string;
   paperUrl?: string;
   githubUrl?: string;
@@ -117,7 +147,12 @@ export interface ProjectItem {
   id: string;
   title: string;
   description: string;
-  category: "Web & Cloud" | "AI & ML" | "CyberSec & Systems" | "Robotics & IoT" | "Mobile & Tools";
+  category:
+    | "Web & Cloud"
+    | "AI & ML"
+    | "CyberSec & Systems"
+    | "Robotics & IoT"
+    | "Mobile & Tools";
   tags: string[];
   authors: string[];
   githubUrl: string;
@@ -161,5 +196,10 @@ export interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category: "General" | "Membership" | "SIGs & Projects" | "Events & Workshops" | "Research";
+  category:
+    | "General"
+    | "Membership"
+    | "SIGs & Projects"
+    | "Events & Workshops"
+    | "Research";
 }

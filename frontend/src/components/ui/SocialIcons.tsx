@@ -1,6 +1,8 @@
 import React from "react";
 
-export const GithubIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+export const GithubIcon: React.FC<{ className?: string }> = ({
+  className = "h-4 w-4",
+}) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -15,7 +17,9 @@ export const GithubIcon: React.FC<{ className?: string }> = ({ className = "h-4 
   </svg>
 );
 
-export const LinkedinIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+export const LinkedinIcon: React.FC<{ className?: string }> = ({
+  className = "h-4 w-4",
+}) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -31,7 +35,9 @@ export const LinkedinIcon: React.FC<{ className?: string }> = ({ className = "h-
   </svg>
 );
 
-export const FacebookIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+export const FacebookIcon: React.FC<{ className?: string }> = ({
+  className = "h-4 w-4",
+}) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
@@ -45,7 +51,9 @@ export const FacebookIcon: React.FC<{ className?: string }> = ({ className = "h-
   </svg>
 );
 
-export const YoutubeIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+export const YoutubeIcon: React.FC<{ className?: string }> = ({
+  className = "h-4 w-4",
+}) => (
   <svg
     className={className}
     viewBox="0 0 24 24"

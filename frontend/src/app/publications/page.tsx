@@ -1,29 +1,42 @@
-import React from "react";
-import { Metadata } from "next";
-import { ResearchPaperCards } from "@/components/publications/ResearchPaperCards";
-import { ProjectPortfolio } from "@/components/publications/ProjectPortfolio";
-import { TechBlogGrid } from "@/components/publications/TechBlogGrid";
-import { MagazineShowcase } from "@/components/publications/MagazineShowcase";
+import { NewsletterSubscribe } from "@/components/contact/NewsletterSubscribe";
+import { PageIntro } from "@/components/ui/PageIntro";
+import { SectionNav } from "@/components/ui/SectionNav";
+import { collections, publicationSections } from "@/data/siteContent";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Publications, Projects & Chronicle | NSU ACM Student Chapter",
-  description: "Peer-reviewed research papers, open-source project portfolio, technical engineering blogs, and downloadable PDF club magazines.",
-};
+export const metadata = { title: "Publications | NSU ACM SC" };
 
 export default function PublicationsPage() {
   return (
-    <div className="flex flex-col">
-      {/* 1. Research Papers Showcase Card (Title, Author, ResearchGate, Paper Link, GitHub Link) */}
-      <ResearchPaperCards />
-
-      {/* 2. Project Portfolio Cards (Category, Tags, Author, GitHub) */}
-      <ProjectPortfolio />
-
-      {/* 3. Tech Blogs & Tutorials */}
-      <TechBlogGrid />
-
-      {/* 4. Club News & PDF Magazine Cards (Cover, Issue Title, Date, Download Action) */}
-      <MagazineShowcase />
+    <div className="site-container">
+      <PageIntro
+        eyebrow="Publications"
+        title="Ideas are better shared."
+        description="Research, projects, writing, and resources from a community that learns in public."
+      />
+      <SectionNav label="publications categories" items={publicationSections} />
+      <div className="editorial-grid">
+        {Object.entries(collections)
+          .filter(([key]) => key.startsWith("publications/"))
+          .map(([key, c], i) => (
+            <Link className="profile-card" href={`/${key}`} key={key}>
+              <p className="eyebrow">
+                0{i + 1} / {c.items.length} entries
+              </p>
+              <h3>{c.eyebrow.split(" / ").at(-1)}</h3>
+              <p>{c.description}</p>
+              <ArrowUpRight className="mt-5" />
+            </Link>
+          ))}
+        <Link className="profile-card" href="/publications/gallery">
+          <p className="eyebrow">08 / Media</p>
+          <h3>Gallery</h3>
+          <p>Photos and videos from chapter events and community moments.</p>
+          <ArrowUpRight className="mt-5" />
+        </Link>
+      </div>
+      <NewsletterSubscribe />
     </div>
   );
 }
