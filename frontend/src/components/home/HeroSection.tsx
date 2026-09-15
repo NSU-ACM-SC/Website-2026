@@ -46,7 +46,13 @@ export function HeroSection() {
             <span>JOIN. COLLABORATE. BUILD. REPEAT.</span>
             <strong>A community, made by you.</strong>
           </div>
-          <Image src="/assets/brand/acm-logo.webp" alt="NSU ACM SC" width={48} height={48} />
+          <Image
+            src="/assets/brand/acm-logo.webp"
+            alt="NSU ACM SC"
+            width={48}
+            height={48}
+            style={{ width: "auto", height: "auto" }}
+          />
         </div>
       </div>
     </section>

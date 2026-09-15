@@ -16,7 +16,13 @@ export function ContentCard({
     >
       {item.category === "News" && (
         <div className="news-card-heading">
-          <Image src="/assets/brand/acm-logo.webp" width={34} height={34} alt="" />
+          <Image
+            src="/assets/brand/acm-logo.webp"
+            width={34}
+            height={34}
+            style={{ width: "auto", height: "auto" }}
+            alt=""
+          />
           <div>
             <strong>NSU ACM Student Chapter</strong>
             <span>Community news / {item.date}</span>

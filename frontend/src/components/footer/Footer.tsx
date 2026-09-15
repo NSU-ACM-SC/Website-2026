@@ -24,6 +24,7 @@ export function Footer() {
               src="/assets/brand/acm-logo.webp"
               width={66}
               height={66}
+              style={{ width: "auto", height: "auto" }}
               alt="NSU ACM Student Chapter"
             />
             <h3 className="mt-5">NSU ACM Student Chapter</h3>

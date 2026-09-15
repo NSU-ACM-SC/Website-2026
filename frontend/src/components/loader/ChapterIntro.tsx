@@ -23,7 +23,13 @@ export function ChapterIntro() {
   if (!visible) return null;
   return (
     <div className="chapter-intro" aria-hidden="true">
-      <Image src="/assets/brand/acm-logo.webp" alt="" width={58} height={58} />
+      <Image
+        src="/assets/brand/acm-logo.webp"
+        alt=""
+        width={58}
+        height={58}
+        style={{ width: "auto", height: "auto" }}
+      />
       <div className="intro-words">
         <span>Join.</span>
         <span>Collaborate.</span>

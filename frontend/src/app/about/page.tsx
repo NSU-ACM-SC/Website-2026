@@ -21,6 +21,7 @@ export default function AboutPage() {
           src="/assets/brand/acm-logo.webp"
           width={260}
           height={260}
+          style={{ width: "auto", height: "auto" }}
           alt="NSU ACM Student Chapter logo"
         />
         <div>
