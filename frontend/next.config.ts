@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
+const basePath = process.env.PAGES_BASE_PATH ?? "";
+
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath,
+  trailingSlash: true,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   images: {
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
@@ -10,35 +19,6 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  },
-  async redirects() {
-    return [
-      {
-        source: "/activities/calendar/:path*",
-        destination: "/activities/calender/:path*",
-        permanent: true,
-      },
-      {
-        source: "/publications/research/:path*",
-        destination: "/publications/researchs/:path*",
-        permanent: true,
-      },
-      {
-        source: "/publications/magazine/:path*",
-        destination: "/publications/megazines/:path*",
-        permanent: true,
-      },
-      {
-        source: "/publications/toolkit/:path*",
-        destination: "/publications/toolkits/:path*",
-        permanent: true,
-      },
-      {
-        source: "/publications/learning-resources/:path*",
-        destination: "/publications/learningResources/:path*",
-        permanent: true,
-      },
-    ];
   },
 };
 

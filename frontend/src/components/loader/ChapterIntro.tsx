@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { withBasePath } from "@/lib/assets";
 import { useEffect, useState } from "react";
 
 // Original, CSS-based interpretation of the word-preloader reference.
@@ -24,7 +25,7 @@ export function ChapterIntro() {
   return (
     <div className="chapter-intro" aria-hidden="true">
       <Image
-        src="/assets/brand/acm-logo.webp"
+        src={withBasePath("/assets/brand/acm-logo.webp")}
         alt=""
         width={330}
         height={280}

@@ -1,4 +1,5 @@
 import { eventItems } from "@/data/siteContent";
+import { withBasePath } from "@/lib/assets";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +48,7 @@ export function HeroSection() {
             <strong>A community, made by you.</strong>
           </div>
           <Image
-            src="/assets/brand/acm-logo.webp"
+            src={withBasePath("/assets/brand/acm-logo.webp")}
             alt="NSU ACM SC"
             width={330}
             height={280}

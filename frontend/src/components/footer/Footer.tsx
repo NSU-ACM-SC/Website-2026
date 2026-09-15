@@ -1,5 +1,6 @@
 import { SocialDock } from "@/components/contact/SocialDock";
 import { chapterEmail } from "@/data/contactData";
+import { withBasePath } from "@/lib/assets";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +22,7 @@ export function Footer() {
         <div className="footer-grid">
           <div>
             <Image
-              src="/assets/brand/acm-logo.webp"
+              src={withBasePath("/assets/brand/acm-logo.webp")}
               width={330}
               height={280}
               sizes="66px"

@@ -1,4 +1,5 @@
 import type { ContentItem } from "@/data/siteContent";
+import { withBasePath } from "@/lib/assets";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +18,7 @@ export function ContentCard({
       {item.category === "News" && (
         <div className="news-card-heading">
           <Image
-            src="/assets/brand/acm-logo.webp"
+            src={withBasePath("/assets/brand/acm-logo.webp")}
             width={330}
             height={280}
             sizes="34px"
@@ -37,7 +38,7 @@ export function ContentCard({
       >
         {item.image ? (
           <Image
-            src={item.image}
+            src={withBasePath(item.image)}
             alt={item.title}
             width={720}
             height={480}

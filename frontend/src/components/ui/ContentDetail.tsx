@@ -1,6 +1,7 @@
 import { PageIntro } from "@/components/ui/PageIntro";
 import type { ContentItem } from "@/data/siteContent";
 import { memberHref } from "@/data/siteContent";
+import { withBasePath } from "@/lib/assets";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,7 +32,7 @@ export function DetailPage({
       {item.image && (
         <div className="detail-image">
           <Image
-            src={item.image}
+            src={withBasePath(item.image)}
             alt={item.title}
             width={1400}
             height={720}
@@ -89,7 +90,7 @@ export function DetailPage({
               <a
                 className="solid-button"
                 key={link.href}
-                href={link.href}
+                href={withBasePath(link.href)}
                 download={link.download || undefined}
                 target={
                   link.download || link.href.startsWith("/")

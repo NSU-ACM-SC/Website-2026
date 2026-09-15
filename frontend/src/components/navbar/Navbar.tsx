@@ -2,6 +2,7 @@
 
 import { primaryNavigation } from "@/data/navigationData";
 import { isHrefActive, isRouterLink } from "@/lib/navigation";
+import { withBasePath } from "@/lib/assets";
 import type { NavigationItem } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,7 +44,7 @@ function LogoLink({ onClick }: { onClick: () => void }) {
       className="group flex h-[50px] w-[50px] shrink-0 items-center justify-center overflow-hidden border-2 border-black bg-[#f1eee7] p-1.5 shadow-[3px_3px_0_#3392cc] outline-none focus-visible:ring-2 focus-visible:ring-[#5227FF]"
     >
       <Image
-        src="/assets/brand/acm-logo.webp"
+        src={withBasePath("/assets/brand/acm-logo.webp")}
         alt="NSU ACM Student Chapter"
         width={330}
         height={280}

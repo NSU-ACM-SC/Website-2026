@@ -1,6 +1,7 @@
 import { HistoryMission } from "@/components/teams/HistoryMission";
 import { NewsletterSubscribe } from "@/components/contact/NewsletterSubscribe";
 import { PageIntro } from "@/components/ui/PageIntro";
+import { withBasePath } from "@/lib/assets";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
@@ -18,7 +19,7 @@ export default function AboutPage() {
       />
       <div className="statement">
         <Image
-          src="/assets/brand/acm-logo.webp"
+          src={withBasePath("/assets/brand/acm-logo.webp")}
           width={330}
           height={280}
           sizes="260px"
