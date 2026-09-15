@@ -8,7 +8,6 @@ import {
   useRef,
   useSyncExternalStore,
 } from "react";
-import { createPortal } from "react-dom";
 
 export interface TargetCursorProps {
   targetSelector?: string;
@@ -320,13 +319,14 @@ const TargetCursor = ({
     targetSelector,
   ]);
 
-  if (!enabled || typeof document === "undefined") return null;
-
-  return createPortal(
+  return (
     <div
       ref={cursorRef}
-      className="pointer-events-none fixed left-0 top-0 z-[2147483647] h-0 w-0"
-      style={{ willChange: "transform" }}
+      className="target-cursor-root pointer-events-none fixed left-0 top-0 z-[2147483647] h-0 w-0"
+      style={{
+        willChange: "transform",
+        transform: "translate3d(50vw, 50vh, 0)",
+      }}
       aria-hidden="true"
     >
       <div
@@ -350,8 +350,7 @@ const TargetCursor = ({
         className="target-cursor-corner absolute left-1/2 top-1/2 h-3 w-3 -translate-x-[150%] translate-y-1/2 border-[3px] border-r-0 border-t-0"
         style={{ willChange: "transform", borderColor: cursorColor }}
       />
-    </div>,
-    document.body,
+    </div>
   );
 };
 

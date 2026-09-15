@@ -34,10 +34,11 @@ function NavLink({
   return isRouterLink(item.href) ? <Link {...props} /> : <a {...props} />;
 }
 
-function LogoLink() {
+function LogoLink({ onClick }: { onClick: () => void }) {
   return (
     <Link
       href="/"
+      onClick={onClick}
       aria-label="Home"
       className="group flex h-[50px] w-[50px] shrink-0 items-center justify-center overflow-hidden border-2 border-black bg-[#f1eee7] p-1.5 shadow-[3px_3px_0_#3392cc] outline-none focus-visible:ring-2 focus-visible:ring-[#5227FF]"
     >
@@ -133,7 +134,13 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-2 z-[1000] flex justify-center px-3 sm:top-3 sm:px-4 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))]">
       <div className="relative w-full max-w-7xl">
         <div className="relative z-[999] mx-auto flex w-full items-center justify-between gap-3 border-[3px] border-black bg-[#f1eee7] p-3 font-display shadow-[6px_6px_0_#000] xl:w-max xl:justify-start">
-          <LogoLink />
+          <LogoLink
+            onClick={() => {
+              setMobileOpen(false);
+              setMobileSection(null);
+              setDesktopSection(null);
+            }}
+          />
 
           <nav aria-label="Primary" className="hidden h-[50px] items-center bg-[#f1eee7] p-1 xl:flex">
             <ul className="m-0 flex h-full list-none items-stretch gap-2 p-0">
