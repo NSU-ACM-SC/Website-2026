@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@500;600;700;800&family=Syne:wght@700;800;900&display=swap");
 @import "tailwindcss";
 
 :root {
+  --font-site: var(--font-inter), "Inter", system-ui, sans-serif;
   --background: #f1eee7;
   --foreground: #000000;
   --acm-orange: #f47b2b;
@@ -22,20 +22,35 @@
   --color-acmgreen: #00d084;
   --color-acmpink: #ff66c4;
 
-  --font-heading: "Syne", "Space Grotesk", system-ui, -apple-system, sans-serif;
-  --font-display: "Space Grotesk", system-ui, -apple-system, sans-serif;
-  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-site);
+  --font-display: var(--font-site);
+  --font-body: var(--font-site);
+  --font-sans: var(--font-site);
+  --font-mono: var(--font-site);
 }
 
 body {
   background-color: #f1eee7;
   color: #000000;
-  font-family:
-    "Plus Jakarta Sans",
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-site);
   overflow-x: hidden;
+}
+
+/* Prevent the native cursor flashing before the client cursor hydrates. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html,
+  body,
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .target-cursor-root {
+    display: none;
+  }
 }
 
 ::selection {
@@ -45,17 +60,17 @@ body {
 
 /* Neo-Brutalist Utility Classes */
 .font-heading {
-  font-family: "Syne", "Space Grotesk", sans-serif;
+  font-family: var(--font-site);
   letter-spacing: -0.02em;
 }
 
 .font-display {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: var(--font-site);
   letter-spacing: -0.01em;
 }
 
 .font-body {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: var(--font-site);
 }
 
 /* Neo-Brutalist Hard Shadows */

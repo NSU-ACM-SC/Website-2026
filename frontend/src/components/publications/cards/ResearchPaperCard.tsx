@@ -11,7 +11,12 @@ export function ResearchPaperCard({ paper }: ResearchPaperCardProps) {
   return (
     <article className="research-card">
       <div className="research-card-image">
-        <Image src={paper.coverImage} alt="" fill unoptimized />
+        <Image
+          src={paper.coverImage}
+          alt=""
+          fill
+          sizes="(max-width: 900px) 100vw, 36vw"
+        />
         <span>{paper.field}</span>
         <span>{paper.year}</span>
       </div>

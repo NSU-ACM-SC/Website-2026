@@ -20,7 +20,13 @@ export function FeaturedEvent({ event }: { event: EventItem }) {
       </div>
       <div className="featured-content">
         <div className="featured-image">
-          <Image src={event.featuredImage} alt={event.title} fill unoptimized />
+          <Image
+            src={event.featuredImage}
+            alt={event.title}
+            fill
+            sizes="(max-width: 900px) 100vw, 50vw"
+            preload
+          />
           <span className="featured-label">{event.category}</span>
           <span className="featured-prize">
             <Trophy size={13} /> Prize pool: BDT 500,000+ &amp; seed grants

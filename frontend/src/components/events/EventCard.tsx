@@ -12,7 +12,12 @@ export function EventCard({ event }: { event: EventItem }) {
   return (
     <article className="event-card">
       <Link href={detailsHref} className="event-card-image">
-        <Image src={event.featuredImage} alt={event.title} fill unoptimized />
+        <Image
+          src={event.featuredImage}
+          alt={event.title}
+          fill
+          sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw"
+        />
         <span
           className={`event-category event-category-${category.toLowerCase()}`}
         >

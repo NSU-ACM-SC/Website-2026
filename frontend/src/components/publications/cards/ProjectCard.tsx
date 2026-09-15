@@ -19,7 +19,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
         aria-label={`View ${project.title}`}
       />
       <div className="project-card-image">
-        <Image src={project.coverImage} alt={project.title} fill unoptimized />
+        <Image
+          src={project.coverImage}
+          alt={project.title}
+          fill
+          sizes="(max-width: 900px) 100vw, 50vw"
+        />
         <span>{project.category}</span>
         {project.featured && <strong>★ Flagship</strong>}
       </div>
