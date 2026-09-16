@@ -1,24 +1,27 @@
-import { MemberDirectory } from "@/components/members/MemberDirectory";
+import { AllMembersTable } from "@/components/members/AllMembersTable";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { SectionNav } from "@/components/ui/SectionNav";
-import { memberSections, publicMembers } from "@/data/memberGroups";
+import { memberSections } from "@/data/memberGroups";
 
 export const metadata = {
-  title: "All Members | NSU ACM SC",
+  title: "All Members Directory | NSU ACM SC",
   description:
-    "Search the public roster, switch between cards and a table, or export your current selection.",
+    "Explore the complete chapter roster of North South University ACM Student Chapter, featuring executive leadership, teams, special interest groups, and contact links.",
 };
 
 export default function Page() {
   return (
     <div className="site-container">
       <PageIntro
-        eyebrow="Members / All Members"
+        eyebrow="Members / Master Directory"
         title="One chapter. Many perspectives."
-        description="Search the public roster, switch between cards and a table, or export your current selection."
+        description="Explore the complete verified chapter roster with live search, multi-criteria filtering, role hierarchy sorting, and instant social connections."
       />
       <SectionNav label="Member categories" items={memberSections} />
-      <MemberDirectory membersData={publicMembers} defaultView="table" />
+      <div className="mt-8">
+        <AllMembersTable />
+      </div>
     </div>
   );
 }
+
