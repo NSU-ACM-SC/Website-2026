@@ -1002,14 +1002,14 @@ export function AllMembersTable() {
                             className="p-1.5 bg-white hover:bg-[#3392cc] hover:text-white text-black border border-black neo-interactive rounded-none"
                             title={`Facebook: ${member.name}`}
                           >
-                            <FacebookIcon size={13} />
+                            <FacebookIcon className="h-[13px] w-[13px]" />
                           </a>
                         ) : (
                           <span
                             className="p-1.5 bg-neutral-100 text-neutral-300 border border-neutral-200 cursor-not-allowed"
                             title="Facebook not available"
                           >
-                            <FacebookIcon size={13} />
+                            <FacebookIcon className="h-[13px] w-[13px]" />
                           </span>
                         )}
 

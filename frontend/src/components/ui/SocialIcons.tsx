@@ -1,10 +1,13 @@
 import React from "react";
 
-export const GithubIcon: React.FC<{ className?: string }> = ({
+export const GithubIcon: React.FC<{ className?: string; size?: number }> = ({
   className = "h-4 w-4",
+  size,
 }) => (
   <svg
     className={className}
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -17,11 +20,14 @@ export const GithubIcon: React.FC<{ className?: string }> = ({
   </svg>
 );
 
-export const LinkedinIcon: React.FC<{ className?: string }> = ({
+export const LinkedinIcon: React.FC<{ className?: string; size?: number }> = ({
   className = "h-4 w-4",
+  size,
 }) => (
   <svg
     className={className}
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -35,11 +41,14 @@ export const LinkedinIcon: React.FC<{ className?: string }> = ({
   </svg>
 );
 
-export const FacebookIcon: React.FC<{ className?: string }> = ({
+export const FacebookIcon: React.FC<{ className?: string; size?: number }> = ({
   className = "h-4 w-4",
+  size,
 }) => (
   <svg
     className={className}
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -51,11 +60,14 @@ export const FacebookIcon: React.FC<{ className?: string }> = ({
   </svg>
 );
 
-export const YoutubeIcon: React.FC<{ className?: string }> = ({
+export const YoutubeIcon: React.FC<{ className?: string; size?: number }> = ({
   className = "h-4 w-4",
+  size,
 }) => (
   <svg
     className={className}
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
