@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, Play, X } from "lucide-react";
 import Image from "next/image";
 import { NeoButton } from "@/components/ui/NeoButton";
@@ -31,12 +31,34 @@ const defaultSlides: HeroSlide[] = [
       thumbnail: "https://img.youtube.com/vi/ahRs2kAS15A/maxresdefault.jpg",
       url: "https://www.youtube.com/embed/ahRs2kAS15A?autoplay=1"
     }
+  },
+  {
+    id: "slide-2",
+    image: "https://mgguorsyrkybikaggjpj.supabase.co/storage/v1/object/public/IC20/IC20VolunteerVsign.webp",
+    subtitle: "NSU ACM STUDENT CHAPTER PRESENTS",
+    title: "Innovation Challenge\nSeason 20 Volunteers",
+    description: "people who makes the event possible",
+    exploreLink: "/about",
+    video: {
+      thumbnail: "https://img.youtube.com/vi/ahRs2kAS15A/maxresdefault.jpg",
+      url: "https://www.youtube.com/embed/ahRs2kAS15A?autoplay=1"
+    }
   }
 ];
 
 export function HeroSection({ slides = defaultSlides }: { slides?: HeroSlide[] }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  useEffect(() => {
+    if (!slides || slides.length <= 1 || isVideoOpen) return;
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [slides, isVideoOpen]);
 
   if (!slides || slides.length === 0) return null;
   const slide = slides[currentSlide];
