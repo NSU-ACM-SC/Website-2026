@@ -1,6 +1,4 @@
-import { CardGrid } from "@/components/ui/CardGrid";
-import { PageIntro } from "@/components/ui/PageIntro";
-import { SectionTitle } from "@/components/ui/SectionTitle";
+
 import {
   FacebookIcon,
   GithubIcon,
@@ -120,120 +118,76 @@ export default async function Page({ params }: Props) {
     .flatMap((c) => c.items)
     .filter((i) => i.authors?.includes(member.name));
 
+  const researchItems = collections["publications/researchs"]?.items.filter((i) => i.authors?.includes(member.name)) || [];
+  const blogItems = collections["publications/blogs"]?.items.filter((i) => i.authors?.includes(member.name)) || [];
+  const projectItems = collections["publications/projects"]?.items.filter((i) => i.authors?.includes(member.name)) || [];
+
   const hasSocials = Boolean(
     member.email || member.facebook || member.linkedin || member.github,
   );
 
   return (
-    <div className="site-container">
-      <Link className="text-link" href="/members">
-        ← Member directory
-      </Link>
-      <PageIntro
-        eyebrow={`${member.status} / Profile preview`}
-        title={member.name}
-        description={`${member.position} · ${member.team} · ${member.sigs.map((sig) => sig.name).join(" / ") || "No SIG"}`}
-      />
-      <div className="detail-columns">
-        <article className="reading-copy">
-          {member.photoUrl ? (
-            <div className="profile-monogram relative overflow-hidden border-2 border-black">
-              <Image
-                src={member.photoUrl}
-                alt={member.name}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <div className="profile-monogram">
-              {member.name
-                .split(" ")
-                .slice(0, 2)
-                .map((s) => s[0])
-                .join("")}
-            </div>
-          )}
-          <h2>A member of the community.</h2>
-          <p>
-            This preview profile connects the member’s role with contributions
-            listed in the current archive.
-          </p>
-          <h3>Role history</h3>
-          <p>
-            {member.joinYear.toLowerCase().includes("joined")
-              ? member.joinYear
-              : `${member.joinYear} — Joined the chapter`}
-            <br />
-            {member.position} / {member.team}
-          </p>
-          <p className="notice">
-            Personal contact details, NSU ID, phone, and blood group are not
-            published here.
-          </p>
-        </article>
-        <aside className="detail-aside">
-          <h3>Community</h3>
-          <dl>
-            <div>
-              <dt>Team</dt>
-              <dd>
-                {member.team} · {member.teamRole}
-              </dd>
-            </div>
-            <div>
-              <dt>Special interest groups</dt>
-              <dd>
-                {member.sigs.length ? (
-                  <ul>
-                    {member.sigs.map((sig) => (
-                      <li key={sig.name}>
-                        {sig.name} · {sig.role}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  "No SIG — membership is optional"
-                )}
-              </dd>
-            </div>
-            {member.chapterRole && (
-              <div>
-                <dt>Chapter role</dt>
-                <dd>{member.chapterRole}</dd>
-              </div>
-            )}
-            <div>
-              <dt>Status</dt>
-              <dd>{member.status}</dd>
-            </div>
-          </dl>
+    <div className="w-full bg-[#f1eee7] text-black min-h-screen py-8 px-4 font-sans">
+      <div className="max-w-5xl mx-auto flex flex-col gap-6">
 
-          {hasSocials && (
-            <div className="mt-6 pt-4 border-t border-black/10">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-600 mb-2">
-                Connect
-              </h4>
-              <div className="flex flex-wrap items-center gap-2">
-                {member.email && (
-                  <a
-                    href={`mailto:${member.email}`}
-                    className="p-2 bg-white hover:bg-[#ffde59] text-black border border-black neo-interactive inline-flex items-center justify-center"
-                    title={`Email ${member.name} (${member.email})`}
-                  >
-                    <Mail size={16} />
-                  </a>
+        {/* FULL PAGE VIEW */}
+        <div className="grid grid-cols-1 gap-6">
+          {/* Top Profile Info */}
+          <div className="flex flex-col md:flex-row gap-8 p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+            <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 border-[3px] border-black overflow-hidden bg-gray-300 relative">
+              {member.photoUrl ? (
+                <Image
+                  src={member.photoUrl}
+                  alt={member.name}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-4xl font-black bg-gray-200">
+                  {member.name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((s) => s[0])
+                    .join("")}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col gap-3 flex-1 justify-center">
+              <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">
+                {member.name}
+              </h2>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {member.position && (
+                  <span className="bg-black text-[#f1eee7] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
+                    {member.position}
+                  </span>
                 )}
-                {member.facebook && (
+                {member.team && (
+                  <span className="bg-black text-[#f1eee7] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
+                    {member.team}
+                  </span>
+                )}
+                {member.chapterRole && (
+                  <span className="bg-transparent text-black border-2 border-black px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
+                    {member.chapterRole}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm md:text-[15px] text-gray-800 leading-relaxed mt-2 max-w-3xl font-medium">
+                {member.status} member of NSU ACM SC. 
+                {member.sigs.length > 0 &&
+                  ` Active in ${member.sigs.map((s) => s.name).join(", ")}.`}
+              </p>
+              <div className="flex flex-wrap gap-3 mt-4">
+                {member.github && (
                   <a
-                    href={member.facebook}
+                    href={member.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-white hover:bg-[#3392cc] hover:text-white text-black border border-black neo-interactive inline-flex items-center justify-center"
-                    title={`Facebook: ${member.name}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
                   >
-                    <FacebookIcon size={16} />
+                    <GithubIcon size={14} /> GitHub
                   </a>
                 )}
                 {member.linkedin && (
@@ -241,40 +195,229 @@ export default async function Page({ params }: Props) {
                     href={member.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 bg-white hover:bg-[#0077b5] hover:text-white text-black border border-black neo-interactive inline-flex items-center justify-center"
-                    title={`LinkedIn: ${member.name}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
                   >
-                    <LinkedinIcon size={16} />
+                    <LinkedinIcon size={14} /> LinkedIn
                   </a>
                 )}
-                {member.github && (
+                <a
+                  href="#"
+                  className="group inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
+                >
+                  <span className="text-[#3392cc] font-black text-sm group-hover:text-white">@</span> Portfolio
+                </a>
+                {member.email && (
                   <a
-                    href={member.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-white hover:bg-black hover:text-white text-black border border-black neo-interactive inline-flex items-center justify-center"
-                    title={`GitHub: ${member.name}`}
+                    href={`mailto:${member.email}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
                   >
-                    <GithubIcon size={16} />
+                    <Mail size={14} /> Email
                   </a>
                 )}
+                <button
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
+                >
+                  Share Profile
+                </button>
               </div>
             </div>
-          )}
+          </div>
 
-          <Link href="/contact" className="outline-button mt-5">
-            Contact the chapter
-          </Link>
-        </aside>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+              <span className="text-4xl font-extrabold text-[#3392cc] mb-1">
+                {contributions.length || 0}
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
+                Contributions
+              </span>
+            </div>
+            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+              <span className="text-4xl font-extrabold text-[#3392cc] mb-1">
+                {member.joinYear.replace(/[^0-9]/g, "").substring(0, 4) || "—"}
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
+                Joined
+              </span>
+            </div>
+            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+              <span className="text-4xl font-extrabold text-[#3392cc] mb-1 truncate" title={member.team}>
+                {member.team || "None"}
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
+                Team
+              </span>
+            </div>
+            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+              <span className="text-4xl font-extrabold text-[#3392cc] mb-1 truncate">
+                {member.status === "Executive"
+                  ? "Exec"
+                  : member.status === "Alumni"
+                    ? "Alum"
+                    : "Active"}
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
+                Status
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom Split Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Activity Log */}
+            <div className="md:col-span-2 p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+              <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">
+                Activity Log
+              </h3>
+              {contributions.length > 0 ? (
+                <div className="flex flex-col gap-5 mt-2">
+                  {contributions.map((contribution, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col sm:flex-row gap-2 sm:gap-6 pb-5 border-b-2 border-dashed border-gray-300 last:border-0 last:pb-0"
+                    >
+                      <div className="font-extrabold text-xs text-[#3392cc] min-w-[70px] pt-1 uppercase">
+                        {(contribution as any).date
+                          ? new Date((contribution as any).date).toLocaleString('default', { month: 'short', year: 'numeric' })
+                          : "—"}
+                      </div>
+                      <div className="flex-1">
+                        <Link href={contribution.href} className="hover:underline">
+                          <h4 className="font-extrabold text-[15px] mb-1 text-black">
+                            {contribution.title}
+                          </h4>
+                        </Link>
+                        <p className="text-[13px] text-gray-600 leading-relaxed font-medium">
+                          {(contribution as any).description || "Contributed to this project/event."}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-5 mt-2">
+                  <p className="text-[13px] text-gray-600 leading-relaxed font-medium">
+                    No public contributions have been linked to this profile yet.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Contact & Badges */}
+            <div className="flex flex-col gap-6">
+              <div className="p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+                <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">
+                  Contact & Personal Details
+                </h3>
+                <div className="flex flex-col gap-3.5 text-[13px] font-bold text-gray-800 mt-2">
+                  {member.email && (
+                    <div className="flex items-center gap-3">
+                      <span className="text-base grayscale opacity-70 w-5 text-center">✉️</span> 
+                      <span className="break-all">{member.email}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-base grayscale opacity-70 w-5 text-center">🎓</span> 
+                    <span>NSU ID: {member.nsuId || "Confidential"}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-base grayscale opacity-70 w-5 text-center">📅</span> 
+                    <span>Member since {member.joinYear}</span>
+                  </div>
+                  {member.sigs.map((sig, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-base grayscale opacity-70 w-5 text-center">⚡</span> 
+                      <span>
+                        {sig.name} ({sig.role})
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+                <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">
+                  Badges
+                </h3>
+                <div className="flex flex-col gap-2.5 mt-2">
+                  <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2">
+                    ⭐ {member.status}
+                  </div>
+                  {member.team && (
+                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2">
+                      🛠️ {member.team}
+                    </div>
+                  )}
+                  {member.chapterRole && (
+                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2">
+                      🏆 Core Member
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Extra Sections (Research, Blogs, Projects) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+              <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">Research</h3>
+              {researchItems.length > 0 ? (
+                <ul className="flex flex-col gap-4 text-[13px] text-gray-700 font-medium mt-2 leading-relaxed">
+                  {researchItems.map((item, idx) => (
+                    <li key={idx} className="relative pl-4 before:content-['▸'] before:absolute before:left-0 before:text-[#3392cc] before:font-bold">
+                      <Link href={item.href} className="hover:underline text-black font-bold">
+                        {item.title}
+                      </Link>
+                      {item.date && ` (${new Date(item.date).getFullYear()})`}
+                      {item.description && <span className="block mt-1 font-normal text-gray-600">{item.description}</span>}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[13px] text-gray-600 font-medium mt-2">No research papers published yet.</p>
+              )}
+            </div>
+            
+            <div className="p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+              <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">Blogs</h3>
+              {blogItems.length > 0 ? (
+                <ul className="flex flex-col gap-4 text-[13px] text-gray-700 font-medium mt-2 leading-relaxed">
+                  {blogItems.map((item, idx) => (
+                    <li key={idx} className="relative pl-4 before:content-['▸'] before:absolute before:left-0 before:text-[#3392cc] before:font-bold">
+                      <Link href={item.href} className="hover:underline text-black font-bold">
+                        {item.title}
+                      </Link>
+                      {item.description && <span className="block mt-1 font-normal text-gray-600">{item.description}</span>}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[13px] text-gray-600 font-medium mt-2">No blog posts published yet.</p>
+              )}
+            </div>
+            
+            <div className="p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+              <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">Projects</h3>
+              {projectItems.length > 0 ? (
+                <ul className="flex flex-col gap-4 text-[13px] text-gray-700 font-medium mt-2 leading-relaxed">
+                  {projectItems.map((item, idx) => (
+                    <li key={idx} className="relative pl-4 before:content-['▸'] before:absolute before:left-0 before:text-[#3392cc] before:font-bold">
+                      <strong className="text-black">
+                        <Link href={item.href} className="hover:underline">{item.title}</Link>:
+                      </strong>{" "}
+                      {item.description}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[13px] text-gray-600 font-medium mt-2">No projects showcased yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <SectionTitle number="Contributions" title="Ideas and work." />
-      {contributions.length ? (
-        <CardGrid items={contributions} />
-      ) : (
-        <p className="empty-state">
-          No public contributions have been linked to this profile yet.
-        </p>
-      )}
     </div>
   );
 }

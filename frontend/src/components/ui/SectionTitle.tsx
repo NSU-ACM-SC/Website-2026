@@ -5,10 +5,12 @@ export function SectionTitle({
   number,
   title,
   href,
+  centered = false,
 }: {
   number: string;
   title: string;
   href?: string;
+  centered?: boolean;
 }) {
   return (
     <div className="section-title">

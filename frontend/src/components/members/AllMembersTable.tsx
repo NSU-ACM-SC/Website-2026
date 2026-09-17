@@ -455,7 +455,7 @@ export function AllMembersTable() {
     <section className="w-full space-y-6" aria-label="Master Chapter Member Directory">
       {/* <WordsPreloader isLoading={loading} initialOnly={false} /> */}
       {/* Top Status & Live Indicator Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#fdfbf7] border-2 border-black neo-shadow-sm">
+      {/* <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#fdfbf7] border-2 border-black neo-shadow-sm">
         <div className="flex items-center gap-2.5">
           <div
             className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold uppercase tracking-wider border border-black ${isLiveSupabase
@@ -491,7 +491,7 @@ export function AllMembersTable() {
             <span>Export CSV</span>
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Search and Quick Category Filter Row */}
       <div className="space-y-4">

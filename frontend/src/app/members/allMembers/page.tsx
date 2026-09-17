@@ -17,7 +17,7 @@ export default function Page() {
         title="One chapter. Many perspectives."
         description="Explore the complete verified chapter roster with live search, multi-criteria filtering, role hierarchy sorting, and instant social connections."
       />
-      <SectionNav label="Member categories" items={memberSections} />
+      {/* <SectionNav label="Member categories" items={memberSections} /> */}
       <div className="mt-8">
         <AllMembersTable />
       </div>
