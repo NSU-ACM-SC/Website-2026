@@ -50,6 +50,8 @@ export function EventManager({
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [selectedColor, setSelectedColor] = useState<string>("All")
   const [selectedTag, setSelectedTag] = useState<string>("All")
+  const [selectedListMonth, setSelectedListMonth] = useState<string>("All")
+  const [selectedListYear, setSelectedListYear] = useState<string>("All")
 
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
@@ -219,21 +221,26 @@ export function EventManager({
   }
 
   const renderListView = () => {
-    const monthEvents = filteredEvents
-      .filter(e => e.startTime.getMonth() === currentDate.getMonth() && e.startTime.getFullYear() === currentDate.getFullYear())
-      .sort((a,b) => a.startTime.getTime() - b.startTime.getTime())
+    let listEvents = [...filteredEvents].sort((a,b) => b.startTime.getTime() - a.startTime.getTime())
     
-    if (monthEvents.length === 0) {
+    if (selectedListMonth !== "All") {
+      listEvents = listEvents.filter(e => e.startTime.getMonth() === parseInt(selectedListMonth))
+    }
+    if (selectedListYear !== "All") {
+      listEvents = listEvents.filter(e => e.startTime.getFullYear() === parseInt(selectedListYear))
+    }
+    
+    if (listEvents.length === 0) {
       return (
         <div className="mt-8 text-center py-16 border-4 border-black border-dashed bg-white">
-          <p className="font-bold text-xl uppercase tracking-wide text-black/70">No events found for {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}.</p>
+          <p className="font-bold text-xl uppercase tracking-wide text-black/70">No events found.</p>
         </div>
       )
     }
 
     return (
       <div className="flex flex-col gap-6 mt-6">
-        {monthEvents.map(e => {
+        {listEvents.map(e => {
            const color = colors.find(c => c.value === e.color) || colors[0]
            return (
             <NeoCard key={e.id} interactive className="p-6 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
@@ -275,6 +282,12 @@ export function EventManager({
     }
   } else if (view === "day") {
     headerText = currentDate.toLocaleDateString('default', { month: 'long', day: 'numeric', year: 'numeric' })
+  } else if (view === "list") {
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    if (selectedListMonth === "All" && selectedListYear === "All") headerText = "All Events"
+    else if (selectedListMonth !== "All" && selectedListYear === "All") headerText = "Events in " + months[parseInt(selectedListMonth)]
+    else if (selectedListMonth === "All" && selectedListYear !== "All") headerText = "Events in " + selectedListYear
+    else headerText = months[parseInt(selectedListMonth)] + " " + selectedListYear
   }
 
   return (
@@ -283,11 +296,15 @@ export function EventManager({
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
         
         <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
-          <NeoButton variant="outline" size="sm" className="px-3" onClick={() => navigateDate("prev")}><ChevronLeft /></NeoButton>
+          {view !== "list" ? (
+            <NeoButton variant="outline" size="sm" className="px-3" onClick={() => navigateDate("prev")}><ChevronLeft /></NeoButton>
+          ) : <div className="w-[42px]" />}
           <h2 className="text-2xl md:text-3xl font-black font-display uppercase tracking-tight min-w-[220px] text-center">
             {headerText}
           </h2>
-          <NeoButton variant="outline" size="sm" className="px-3" onClick={() => navigateDate("next")}><ChevronRight /></NeoButton>
+          {view !== "list" ? (
+            <NeoButton variant="outline" size="sm" className="px-3" onClick={() => navigateDate("next")}><ChevronRight /></NeoButton>
+          ) : <div className="w-[42px]" />}
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
@@ -323,6 +340,28 @@ export function EventManager({
         </div>
         
         <div className="flex w-full lg:w-auto gap-4 overflow-x-auto custom-scrollbar pb-2 lg:pb-0">
+          {view === "list" && (
+            <>
+              <select 
+                style={{ outline: "none" }}
+                className="w-full sm:w-auto border-2 border-black py-3 px-3 md:px-5 focus:outline-none focus:ring-4 focus:ring-black transition-all bg-white font-bold text-sm md:text-base cursor-pointer shrink-0"
+                value={selectedListMonth}
+                onChange={(e) => setSelectedListMonth(e.target.value)}
+              >
+                <option value="All">All Months</option>
+                {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m, i) => <option key={m} value={i}>{m}</option>)}
+              </select>
+              <select 
+                style={{ outline: "none" }}
+                className="w-full sm:w-auto border-2 border-black py-3 px-3 md:px-5 focus:outline-none focus:ring-4 focus:ring-black transition-all bg-white font-bold text-sm md:text-base cursor-pointer shrink-0"
+                value={selectedListYear}
+                onChange={(e) => setSelectedListYear(e.target.value)}
+              >
+                <option value="All">All Years</option>
+                {[2024, 2025, 2026, 2027, 2028].map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
+            </>
+          )}
           <select 
             style={{ outline: "none" }}
             className="w-full sm:w-auto border-2 border-black py-3 px-3 md:px-5 focus:outline-none focus:ring-4 focus:ring-black transition-all bg-white font-bold text-sm md:text-base cursor-pointer shrink-0"
