@@ -21,9 +21,10 @@ export const metadata = { title: "Home | NSU ACM SC" };
 
 export default function HomePage() {
   return (
-    <div className="site-container">
+    <>
       <HeroSection />
-      <QuickStats />
+      <div className="site-container pt-8 md:pt-16">
+        <QuickStats />
       <section className="statement">
         <div>
           <p className="eyebrow">01 / What is NSU ACM?</p>
@@ -128,5 +129,6 @@ export default function HomePage() {
       <CampusLocationMap />
       <NewsletterSubscribe />
     </div>
+    </>
   );
 }
