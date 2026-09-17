@@ -143,6 +143,12 @@ export function Navbar() {
             }}
           />
 
+          <div className="flex-1 flex items-center justify-center">
+            <span className="font-black text-lg md:text-xl xl:text-2xl tracking-[0.15em] uppercase text-black whitespace-nowrap">
+              NSU ACM SC
+            </span>
+          </div>
+
           <nav aria-label="Primary" className="hidden h-[50px] items-center bg-[#f1eee7] p-1 xl:flex">
             <ul className="m-0 flex h-full list-none items-stretch gap-3.5 p-0">
               {primaryNavigation.map(renderDesktopItem)}
