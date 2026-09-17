@@ -10,11 +10,11 @@ export function Footer() {
     <footer className="w-full bg-[#f1eee7] px-4 md:px-8 py-6 md:py-10 border-t-[3px] border-black font-body">
       <div className="w-full max-w-[1240px] mx-auto flex flex-col lg:flex-row gap-5 lg:gap-8">
         
-        {/* Left Side - Offwhite Card */}
+        {/* Left Side - White Card */}
         <NeoCard 
           variant="default" 
           shadow="md" 
-          className="w-full lg:w-1/3 flex flex-col justify-between p-6 md:p-8 bg-[#f1eee7]"
+          className="w-full lg:w-1/3 flex flex-col justify-between p-6 md:p-8 bg-white"
         >
           <div>
             <Image
