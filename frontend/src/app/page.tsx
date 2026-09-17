@@ -1,6 +1,6 @@
 import { WhyNSUACM } from "@/components/home/WhyNSUACM";
 import { CampusLocationMap } from "@/components/home/CampusLocationMap";
-import { NewsletterSubscribe } from "@/components/contact/NewsletterSubscribe";
+import { NewsLetterSubCard } from "@/components/newsletter/newsLetterSubCard";
 import { HeroSection } from "@/components/home/HeroSection";
 import { QuickStats } from "@/components/home/QuickStats";
 import { VideoFeature } from "@/components/home/VideoFeature";
@@ -127,7 +127,9 @@ export default function HomePage() {
       <WhyNSUACM />
       <VideoFeature />
       <CampusLocationMap />
-      <NewsletterSubscribe />
+      <div className="py-12 md:py-20 w-full">
+        <NewsLetterSubCard />
+      </div>
     </div>
     </>
   );
