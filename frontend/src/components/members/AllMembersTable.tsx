@@ -33,6 +33,7 @@ import {
   SIG_POSITIONS_ORDER,
   fetchChapterMembers,
 } from "@/lib/supabaseMembers";
+// import WordsPreloader from "@/components/loader/WordsPreloader";
 
 type SortField =
   | "name"
@@ -452,15 +453,15 @@ export function AllMembersTable() {
 
   return (
     <section className="w-full space-y-6" aria-label="Master Chapter Member Directory">
+      {/* <WordsPreloader isLoading={loading} initialOnly={false} /> */}
       {/* Top Status & Live Indicator Banner */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#fdfbf7] border-2 border-black neo-shadow-sm">
         <div className="flex items-center gap-2.5">
           <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold uppercase tracking-wider border border-black ${
-              isLiveSupabase
-                ? "bg-[#00d084]/20 text-[#007849]"
-                : "bg-[#ffde59]/30 text-black"
-            }`}
+            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold uppercase tracking-wider border border-black ${isLiveSupabase
+              ? "bg-[#00d084]/20 text-[#007849]"
+              : "bg-[#ffde59]/30 text-black"
+              }`}
           >
             <Database size={13} />
             <span>{isLiveSupabase ? "Supabase Live Database" : "Offline / No Data"}</span>
@@ -529,11 +530,10 @@ export function AllMembersTable() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleSortToggle("hierarchy")}
-              className={`px-3 py-2.5 text-xs font-bold uppercase tracking-wider border-2 border-black transition-all flex items-center gap-1.5 ${
-                sortField === "hierarchy"
-                  ? "bg-black text-white neo-shadow-sm"
-                  : "bg-white hover:bg-neutral-100 text-black"
-              }`}
+              className={`px-3 py-2.5 text-xs font-bold uppercase tracking-wider border-2 border-black transition-all flex items-center gap-1.5 ${sortField === "hierarchy"
+                ? "bg-black text-white neo-shadow-sm"
+                : "bg-white hover:bg-neutral-100 text-black"
+                }`}
               title="Sort by official chapter hierarchy: EB -> Sub-Exec / Coord -> In-Charge / Mod -> Members"
             >
               <Crown size={14} className="text-[#ffde59]" />
@@ -572,11 +572,10 @@ export function AllMembersTable() {
                 setCategoryFilter(cat.key as any);
                 setPage(1);
               }}
-              className={`px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 transition-all ${
-                categoryFilter === cat.key
-                  ? "bg-[#f47b2b] text-white border-black neo-shadow-sm -translate-y-0.5"
-                  : "bg-white text-black border-neutral-300 hover:border-black"
-              }`}
+              className={`px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 transition-all ${categoryFilter === cat.key
+                ? "bg-[#f47b2b] text-white border-black neo-shadow-sm -translate-y-0.5"
+                : "bg-white text-black border-neutral-300 hover:border-black"
+                }`}
             >
               {cat.label}
             </button>
@@ -724,11 +723,10 @@ export function AllMembersTable() {
                 setPageSize(size);
                 setPage(1);
               }}
-              className={`px-2 py-0.5 border ${
-                pageSize === size
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-black border-neutral-300 hover:border-black"
-              }`}
+              className={`px-2 py-0.5 border ${pageSize === size
+                ? "bg-black text-white border-black"
+                : "bg-white text-black border-neutral-300 hover:border-black"
+                }`}
             >
               {size === 1000 ? "All" : size}
             </button>
@@ -854,9 +852,8 @@ export function AllMembersTable() {
                 return (
                   <tr
                     key={member.id}
-                    className={`transition-colors hover:bg-[#fff9e6]/60 ${
-                      isExecutive ? "bg-[#fffdf5]" : "bg-white"
-                    }`}
+                    className={`transition-colors hover:bg-[#fff9e6]/60 ${isExecutive ? "bg-[#fffdf5]" : "bg-white"
+                      }`}
                   >
                     {/* 1. Name */}
                     <td className="p-3.5 font-bold text-black border-r border-black/10">
@@ -924,17 +921,16 @@ export function AllMembersTable() {
                         {/* 4. Team Position */}
                         <td className="p-3.5 border-r border-black/10 whitespace-nowrap">
                           <span
-                            className={`inline-block px-2 py-0.5 border text-[11px] font-bold uppercase tracking-wider ${
-                              member.teamPosition === "Sub-Executive"
-                                ? "bg-[#5227ff]/15 text-[#3b19b8] border-[#5227ff]"
-                                : member.teamPosition === "In-Charge"
+                            className={`inline-block px-2 py-0.5 border text-[11px] font-bold uppercase tracking-wider ${member.teamPosition === "Sub-Executive"
+                              ? "bg-[#5227ff]/15 text-[#3b19b8] border-[#5227ff]"
+                              : member.teamPosition === "In-Charge"
                                 ? "bg-[#3392cc]/15 text-[#1f638d] border-[#3392cc]"
                                 : member.teamPosition === "Senior Member"
-                                ? "bg-[#00d084]/20 text-[#006e42] border-[#00d084]"
-                                : member.teamPosition === "General Member"
-                                ? "bg-neutral-100 text-neutral-800 border-neutral-400"
-                                : "bg-neutral-50 text-neutral-500 border-neutral-300"
-                            }`}
+                                  ? "bg-[#00d084]/20 text-[#006e42] border-[#00d084]"
+                                  : member.teamPosition === "General Member"
+                                    ? "bg-neutral-100 text-neutral-800 border-neutral-400"
+                                    : "bg-neutral-50 text-neutral-500 border-neutral-300"
+                              }`}
                           >
                             {member.teamPosition}
                           </span>
@@ -953,15 +949,14 @@ export function AllMembersTable() {
                         <td className="p-3.5 border-r border-black/10 whitespace-nowrap">
                           {member.sig && member.sig !== "—" && member.sig !== "None" ? (
                             <span
-                              className={`inline-block px-2 py-0.5 border text-[11px] font-bold uppercase tracking-wider ${
-                                member.sigPosition === "Coordinator"
-                                  ? "bg-[#f47b2b]/15 text-[#b04a07] border-[#f47b2b]"
-                                  : member.sigPosition === "Moderator"
+                              className={`inline-block px-2 py-0.5 border text-[11px] font-bold uppercase tracking-wider ${member.sigPosition === "Coordinator"
+                                ? "bg-[#f47b2b]/15 text-[#b04a07] border-[#f47b2b]"
+                                : member.sigPosition === "Moderator"
                                   ? "bg-[#ffde59]/30 text-[#856b00] border-[#bda000]"
                                   : member.sigPosition === "Senior Member"
-                                  ? "bg-[#00d084]/20 text-[#006e42] border-[#00d084]"
-                                  : "bg-neutral-100 text-neutral-800 border-neutral-400"
-                              }`}
+                                    ? "bg-[#00d084]/20 text-[#006e42] border-[#00d084]"
+                                    : "bg-neutral-100 text-neutral-800 border-neutral-400"
+                                }`}
                             >
                               {member.sigPosition}
                             </span>

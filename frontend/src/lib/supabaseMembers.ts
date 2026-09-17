@@ -37,6 +37,8 @@ export interface ChapterMember {
   linkedin?: string;
   github?: string;
   status?: string;
+  semesterJoined?: string;
+  photoUrl?: string;
 }
 
 export const EXECUTIVE_POSITIONS_ORDER: ExecutivePosition[] = [
@@ -71,9 +73,14 @@ export function normalizeExecutivePosition(
 ): ExecutivePosition | undefined {
   if (!pos) return undefined;
   const clean = pos.trim().toLowerCase();
-  if (clean === "faculty advisor" || clean === "advisor") return "Faculty Advisor";
+  if (clean === "faculty advisor" || clean === "advisor")
+    return "Faculty Advisor";
   if (clean === "chair" || clean === "president") return "Chair";
-  if (clean === "vice-chair" || clean === "vice chair" || clean === "vice_chair")
+  if (
+    clean === "vice-chair" ||
+    clean === "vice chair" ||
+    clean === "vice_chair"
+  )
     return "Vice-Chair";
   if (clean === "secretary") return "Secretary";
   if (clean === "treasurer") return "Treasurer";
@@ -86,13 +93,22 @@ export function normalizeExecutivePosition(
 export function normalizeTeamPosition(pos?: string | null): TeamPosition {
   if (!pos) return "General Member";
   const clean = pos.trim().toLowerCase();
-  if (clean === "sub-executive" || clean === "sub executive" || clean === "sub_executive")
+  if (
+    clean === "sub-executive" ||
+    clean === "sub executive" ||
+    clean === "sub_executive"
+  )
     return "Sub-Executive";
   if (clean === "in-charge" || clean === "incharge" || clean === "in charge")
     return "In-Charge";
   if (clean === "senior member" || clean === "senior") return "Senior Member";
-  if (clean === "general member" || clean === "general") return "General Member";
-  if (clean === "probationary member" || clean === "probationary" || clean === "probation")
+  if (clean === "general member" || clean === "general")
+    return "General Member";
+  if (
+    clean === "probationary member" ||
+    clean === "probationary" ||
+    clean === "probation"
+  )
     return "Probationary Member";
   return "General Member";
 }
@@ -103,7 +119,8 @@ export function normalizeSIGPosition(pos?: string | null): SIGPosition {
   if (clean === "coordinator") return "Coordinator";
   if (clean === "moderator") return "Moderator";
   if (clean === "senior member" || clean === "senior") return "Senior Member";
-  if (clean === "general member" || clean === "general") return "General Member";
+  if (clean === "general member" || clean === "general")
+    return "General Member";
   if (clean === "probationary member" || clean === "probationary")
     return "Probationary Member";
   return "General Member";
@@ -120,23 +137,27 @@ export async function fetchChapterMembers(): Promise<FetchResult> {
   try {
     const supabase = createClient();
     const tableName = "All Member Info";
-    
+
     // Fetch the single table with a timeout
     const fetchPromise = supabase.from(tableName).select("*");
 
     // Timeout promise (15 seconds)
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Supabase connection timed out after 15 seconds.")), 15000)
+      setTimeout(
+        () =>
+          reject(new Error("Supabase connection timed out after 15 seconds.")),
+        15000,
+      ),
     );
 
     // Race the fetch promise against the timeout
-    const result = await Promise.race([
-      fetchPromise,
-      timeoutPromise
-    ]) as { data: any[] | null; error: any };
+    const result = (await Promise.race([fetchPromise, timeoutPromise])) as {
+      data: Record<string, unknown>[] | null;
+      error: Error | null;
+    };
 
-    let fetchedRows: any[] | null = null;
-    let queryError: any = null;
+    let fetchedRows: Record<string, unknown>[] | null = null;
+    let queryError: Error | null = null;
 
     const { data, error } = result;
     if (!error && data && data.length > 0) {
@@ -146,44 +167,9 @@ export async function fetchChapterMembers(): Promise<FetchResult> {
     }
 
     if (fetchedRows && fetchedRows.length > 0) {
-      const normalized: ChapterMember[] = fetchedRows.map((row, index) => {
-        // Map exact columns from the user's schema
-        const id = row.NSU_ID || `supa-${index + 1}`;
-        const nsuId = row.NSU_ID || "N/A";
-        const name = row.Name || "Unknown Member";
-
-        const rawExec = row.Executive_Position;
-        const executivePosition = normalizeExecutivePosition(rawExec);
-
-        const team = row.Team_Name || "Corporate";
-        const rawTeamPos = row.Team_Position;
-        const teamPosition = normalizeTeamPosition(rawTeamPos);
-
-        const sig = row.SIG || "—";
-        const rawSigPos = row.SIG_Position;
-        const sigPosition = normalizeSIGPosition(rawSigPos);
-
-        const email = row.Email;
-        const facebook = row.Facebook_link;
-        const linkedin = row.Linkedin_link;
-        const github = row.Github_link;
-
-        return {
-          id: String(id),
-          nsuId: String(nsuId),
-          name: String(name),
-          executivePosition,
-          team: String(team),
-          teamPosition,
-          sig: String(sig),
-          sigPosition,
-          email: email ? String(email) : undefined,
-          facebook: facebook ? String(facebook) : undefined,
-          linkedin: linkedin ? String(linkedin) : undefined,
-          github: github ? String(github) : undefined,
-          status: "Active",
-        };
-      });
+      const normalized: ChapterMember[] = fetchedRows.map((row, index) =>
+        mapRowToChapterMember(row, index),
+      );
 
       return {
         members: normalized,
@@ -195,13 +181,89 @@ export async function fetchChapterMembers(): Promise<FetchResult> {
     return {
       members: [],
       isLiveSupabase: false,
-      error: queryError ? queryError.message : "No records found. If your table has data, please ensure Row Level Security (RLS) is disabled or you have a SELECT policy allowing public reads.",
+      error: queryError
+        ? queryError.message
+        : "No records found. If your table has data, please ensure Row Level Security (RLS) is disabled or you have a SELECT policy allowing public reads.",
     };
-  } catch (err: any) {
+  } catch (err) {
+    const message =
+      err instanceof Error
+        ? err.message
+        : "Failed to connect to Supabase database.";
     return {
       members: [],
       isLiveSupabase: false,
-      error: err?.message || "Failed to connect to Supabase database.",
+      error: message,
     };
+  }
+}
+
+// Convert a single database row into a structured ChapterMember
+export function mapRowToChapterMember(
+  row: Record<string, unknown>,
+  index: number = 0,
+): ChapterMember {
+  const id = (row.NSU_ID as string) || `supa-${index + 1}`;
+  const nsuId = (row.NSU_ID as string) || "N/A";
+  const name = (row.Name as string) || "Unknown Member";
+
+  const rawExec = row.Executive_Position as string | null | undefined;
+  const executivePosition = normalizeExecutivePosition(rawExec);
+
+  const team = (row.Team_Name as string) || "Corporate";
+  const rawTeamPos = row.Team_Position as string | null | undefined;
+  const teamPosition = normalizeTeamPosition(rawTeamPos);
+
+  const sig = (row.SIG as string) || "—";
+  const rawSigPos = row.SIG_Position as string | null | undefined;
+  const sigPosition = normalizeSIGPosition(rawSigPos);
+
+  const email = row.Email;
+  const facebook = row.Facebook_link;
+  const linkedin = row.Linkedin_link;
+  const github = row.Github_link;
+  const semesterJoined = row.Semester_Joined;
+  const photoUrl = row.Photo_url;
+
+  return {
+    id: String(id),
+    nsuId: String(nsuId),
+    name: String(name),
+    executivePosition,
+    team: String(team),
+    teamPosition,
+    sig: String(sig),
+    sigPosition,
+    email: email ? String(email) : undefined,
+    facebook: facebook ? String(facebook) : undefined,
+    linkedin: linkedin ? String(linkedin) : undefined,
+    github: github ? String(github) : undefined,
+    status: executivePosition ? "Executive" : "Active",
+    semesterJoined: semesterJoined ? String(semesterJoined) : undefined,
+    photoUrl: photoUrl ? String(photoUrl) : undefined,
+  };
+}
+
+// Fetch a single member by their NSU ID
+export async function fetchChapterMemberByNsuId(
+  nsuId: string,
+): Promise<ChapterMember | null> {
+  try {
+    const supabase = createClient();
+    const tableName = "All Member Info";
+    const { data, error } = await supabase
+      .from(tableName)
+      .select("*")
+      .eq("NSU_ID", nsuId)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return mapRowToChapterMember(data as Record<string, unknown>);
+  } catch (err) {
+    console.error("Error fetching member by NSU_ID:", err);
+    return null;
   }
 }

@@ -1,4 +1,5 @@
 import { WhyNSUACM } from "@/components/home/WhyNSUACM";
+import { LandingPreloader } from "@/components/home/LandingPreloader";
 import { CampusLocationMap } from "@/components/home/CampusLocationMap";
 import { NewsLetterSubCard } from "@/components/newsletter/newsLetterSubCard";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -22,6 +23,7 @@ export const metadata = { title: "Home | NSU ACM SC" };
 export default function HomePage() {
   return (
     <>
+      <LandingPreloader />
       <HeroSection />
       <div className="site-container pt-8 md:pt-16">
         <QuickStats />
