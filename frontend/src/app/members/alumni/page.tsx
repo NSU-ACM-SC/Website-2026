@@ -1,7 +1,8 @@
 import { MemberDirectory } from "@/components/members/MemberDirectory";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { SectionNav } from "@/components/ui/SectionNav";
-import { memberSections } from "@/data/memberGroups";
+import { memberSections, getMappedAlumniMembers } from "@/data/memberGroups";
+import { fetchChapterMembers } from "@/lib/supabaseMembers";
 import Link from "next/link";
 
 export const metadata = {
@@ -10,7 +11,10 @@ export const metadata = {
     "Meet former members and explore the contributions they have shared with this community.",
 };
 
-export default function Page() {
+export default async function Page() {
+  const { members } = await fetchChapterMembers();
+  const alumniMembers = getMappedAlumniMembers(members);
+
   return (
     <div className="site-container">
       <PageIntro
@@ -19,7 +23,7 @@ export default function Page() {
         description="Meet former members and explore the contributions they have shared with this community."
       />
       <SectionNav label="Member categories" items={memberSections} />
-      <MemberDirectory membersData={[]} showControls={false} />
+      <MemberDirectory membersData={alumniMembers} showControls={false} fetchCategory="alumni" />
       <section className="statement">
         <h2>Stay connected.</h2>
         <div>

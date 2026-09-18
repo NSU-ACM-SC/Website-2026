@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MemberDirectory } from "./MemberDirectory";
-import type { PublicMember } from "@/data/memberGroups";
+import { PublicMember, getMappedNonCoreSigMembers } from "@/data/memberGroups";
+import { fetchChapterMembers } from "@/lib/supabaseMembers";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 
 type Props = {
@@ -11,8 +12,19 @@ type Props = {
 };
 
 export function NonCoreSigTabs({ membersData, sigs }: Props) {
+  const [liveData, setLiveData] = useState<PublicMember[]>(membersData);
   const [positionFilter, setPositionFilter] = useState<string>("All");
   const [sigFilter, setSigFilter] = useState<string>("All");
+
+  useEffect(() => {
+    async function load() {
+      const { members, isLiveSupabase } = await fetchChapterMembers();
+      if (isLiveSupabase && members && members.length > 0) {
+        setLiveData(getMappedNonCoreSigMembers(members));
+      }
+    }
+    load();
+  }, []);
 
   const filterMember = (member: PublicMember, role: string, sigName: string) => {
     return member.sigs.some(s => s.role === role && s.name === sigName);
@@ -27,7 +39,7 @@ export function NonCoreSigTabs({ membersData, sigs }: Props) {
     
     // Check if there are any members in this entire section based on current filters
     const hasMembers = sigsToRender.some(sig => 
-      membersData.some(m => filterMember(m, role, sig))
+      liveData.some(m => filterMember(m, role, sig))
     );
 
     if (!hasMembers) return null;
@@ -38,7 +50,7 @@ export function NonCoreSigTabs({ membersData, sigs }: Props) {
         
         <div className="flex flex-col gap-12 mt-12">
           {sigsToRender.map(sig => {
-            const sigMembers = membersData.filter(m => filterMember(m, role, sig));
+            const sigMembers = liveData.filter(m => filterMember(m, role, sig));
             
             if (sigMembers.length === 0) return null;
             

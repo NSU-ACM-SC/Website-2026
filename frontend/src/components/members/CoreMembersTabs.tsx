@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MemberDirectory } from "./MemberDirectory";
-import type { PublicMember } from "@/data/memberGroups";
+import { PublicMember, getMappedCoreMembers } from "@/data/memberGroups";
+import { fetchChapterMembers } from "@/lib/supabaseMembers";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 
 type Props = {
@@ -11,8 +12,19 @@ type Props = {
 };
 
 export function CoreMembersTabs({ membersData, teams }: Props) {
+  const [liveData, setLiveData] = useState<PublicMember[]>(membersData);
   const [positionFilter, setPositionFilter] = useState<string>("All");
   const [teamFilter, setTeamFilter] = useState<string>("All");
+
+  useEffect(() => {
+    async function load() {
+      const { members, isLiveSupabase } = await fetchChapterMembers();
+      if (isLiveSupabase && members && members.length > 0) {
+        setLiveData(getMappedCoreMembers(members));
+      }
+    }
+    load();
+  }, []);
 
   const filterMember = (member: PublicMember, role: string, team: string) => {
     return member.teamRole === role && member.team === team;
@@ -26,7 +38,7 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
     
     // Check if there are any members in this entire section based on current filters
     const hasMembers = teamsToRender.some(team => 
-      membersData.some(m => filterMember(m, role, team))
+      liveData.some(m => filterMember(m, role, team))
     );
 
     if (!hasMembers) return null;
@@ -37,7 +49,7 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
         
         <div className="flex flex-col gap-12 mt-12">
           {teamsToRender.map(team => {
-            const teamMembers = membersData.filter(m => filterMember(m, role, team));
+            const teamMembers = liveData.filter(m => filterMember(m, role, team));
             
             if (teamMembers.length === 0) return null;
             
