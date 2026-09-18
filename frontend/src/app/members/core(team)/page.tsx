@@ -26,7 +26,6 @@ export default async function Page() {
     )
   ).sort();
 
-  const sigs = ["Admin", "Web", "R&D", "D&D", "M&D", "Cultural"];
 
   return (
     <div className="site-container">
@@ -35,11 +34,10 @@ export default async function Page() {
         title="The people who make it happen."
         description="Meet the operational leads, coordinators, and SIG leads in the preview roster."
       />
-      <SectionNav label="Member categories" items={memberSections} />
 
-      <SectionTitle number="01 / Leadership" title="Teams" />
+
       <div className="mb-12">
-        <CoreMembersTabs membersData={mappedCoreMembers} teams={teams} sigs={sigs} />
+        <CoreMembersTabs membersData={mappedCoreMembers} teams={teams} />
       </div>
 
       <section className="statement">

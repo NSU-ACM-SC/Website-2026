@@ -32,7 +32,8 @@ export const primaryNavigation: NavigationItem[] = [
     label: "Members",
     children: [
       { href: "/members/panels", label: "Panel" },
-      { href: "/members/core", label: "Core" },
+      { href: "/members/core(team)", label: "Core(Team)" },
+      { href: "/members/core(sig)", label: "Core(SIG)" },
       { href: "/members/members(non-core)", label: "Member (Non-Core)" },
       { href: "/members/alumni", label: "Alumni" },
       { href: "/members/allMembers", label: "All Members" },

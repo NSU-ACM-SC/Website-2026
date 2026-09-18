@@ -71,10 +71,8 @@ export const memberSections = [
 export function getMappedCoreMembers(supabaseMembers: ChapterMember[]): PublicMember[] {
   const coreSupabaseMembers = supabaseMembers.filter(
     (m) =>
-      m.teamPosition === "Sub-Executive" ||
-      m.teamPosition === "In-Charge" ||
-      m.sigPosition === "Coordinator" ||
-      m.sigPosition === "Moderator"
+      (m.teamPosition && (m.teamPosition.includes("Sub-Executive") || m.teamPosition.includes("In-Charge"))) ||
+      (m.sigPosition && (m.sigPosition.includes("Coordinator") || m.sigPosition.includes("Moderator")))
   );
 
   return coreSupabaseMembers.map((m) => {
@@ -85,10 +83,12 @@ export function getMappedCoreMembers(supabaseMembers: ChapterMember[]): PublicMe
           ? "InCharge"
           : m.teamPosition;
 
-    const sigs =
-      m.sig && m.sig !== "—"
-        ? m.sig.split(",").map((s) => ({ name: s.trim() as any, role: m.sigPosition as any }))
-        : [];
+    const sigNames = m.sig && m.sig !== "—" ? m.sig.split(",").map(s => s.trim()) : [];
+    const sigRoles = m.sigPosition && m.sigPosition !== "—" ? m.sigPosition.split(",").map(r => r.trim()) : [];
+    const sigs = sigNames.map((name, index) => ({
+      name: name as any,
+      role: (sigRoles[index] || sigRoles[0] || m.sigPosition) as any
+    }));
 
     const possibleRoles = [m.executivePosition, teamRole, m.sigPosition].filter(
       Boolean
@@ -135,20 +135,20 @@ export function getMappedNonCoreMembers(supabaseMembers: ChapterMember[]): Publi
       m.status !== "Executive" &&
       m.status !== "Advisor" &&
       m.status !== "Alumni" &&
-      m.teamPosition !== "Sub-Executive" &&
-      m.teamPosition !== "In-Charge" &&
-      m.sigPosition !== "Coordinator" &&
-      m.sigPosition !== "Moderator" &&
+      !(m.teamPosition && (m.teamPosition.includes("Sub-Executive") || m.teamPosition.includes("In-Charge"))) &&
+      !(m.sigPosition && (m.sigPosition.includes("Coordinator") || m.sigPosition.includes("Moderator"))) &&
       !m.executivePosition
   );
 
   return nonCoreSupabaseMembers.map((m) => {
     const teamRole = m.teamPosition;
 
-    const sigs =
-      m.sig && m.sig !== "—"
-        ? m.sig.split(",").map((s) => ({ name: s.trim() as any, role: m.sigPosition as any }))
-        : [];
+    const sigNames = m.sig && m.sig !== "—" ? m.sig.split(",").map(s => s.trim()) : [];
+    const sigRoles = m.sigPosition && m.sigPosition !== "—" ? m.sigPosition.split(",").map(r => r.trim()) : [];
+    const sigs = sigNames.map((name, index) => ({
+      name: name as any,
+      role: (sigRoles[index] || sigRoles[0] || m.sigPosition) as any
+    }));
 
     const possibleRoles = [m.executivePosition, teamRole, m.sigPosition].filter(
       Boolean
@@ -216,10 +216,12 @@ export function getMappedPanelMembers(supabaseMembers: ChapterMember[]): PublicM
           ? "InCharge"
           : m.teamPosition;
 
-    const sigs =
-      m.sig && m.sig !== "—"
-        ? m.sig.split(",").map((s) => ({ name: s.trim() as any, role: m.sigPosition as any }))
-        : [];
+    const sigNames = m.sig && m.sig !== "—" ? m.sig.split(",").map(s => s.trim()) : [];
+    const sigRoles = m.sigPosition && m.sigPosition !== "—" ? m.sigPosition.split(",").map(r => r.trim()) : [];
+    const sigs = sigNames.map((name, index) => ({
+      name: name as any,
+      role: (sigRoles[index] || sigRoles[0] || m.sigPosition) as any
+    }));
 
     const possibleRoles = [chapterRole, teamRole, m.sigPosition].filter(
       Boolean

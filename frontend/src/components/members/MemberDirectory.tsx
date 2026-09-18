@@ -214,20 +214,32 @@ export function MemberDirectory({
           </button>
         </div>
       ) : (
-        <div
-          className={`grid gap-6 ${
-            visible.length === 1
-              ? "grid-cols-1 max-w-sm mx-auto w-full"
-              : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-          }`}
-        >
-          {visible.map((member) => (
-            <Link
-              href={`/members/${member.id}`}
-              key={member.id}
-              className="group flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200"
-            >
-              {/* Top Image Section */}
+        <div className="grid grid-cols-12 gap-6 mx-auto w-full">
+          {visible.map((member, index) => {
+            const total = visible.length;
+            const isLastItemMd = total % 2 === 1 && index === total - 1;
+            const isLastRowSingleXl = total % 3 === 1 && index === total - 1;
+            const isLastRowDoubleFirstXl = total % 3 === 2 && index === total - 2;
+
+            let colClasses = "col-span-12 md:col-span-6 xl:col-span-4";
+
+            if (isLastItemMd) colClasses += " md:col-start-4";
+            
+            if (isLastRowSingleXl) {
+              colClasses += " xl:col-start-5";
+            } else if (isLastRowDoubleFirstXl) {
+              colClasses += " xl:col-start-3";
+            } else if (isLastItemMd) {
+              colClasses += " xl:col-start-auto";
+            }
+
+            return (
+              <Link
+                href={`/members/${member.id}`}
+                key={member.id}
+                className={`${colClasses} group flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200`}
+              >
+                {/* Top Image Section */}
               <div className="relative w-full aspect-[1/1] border-b-[3px] border-black bg-gray-200 shrink-0">
                 {member.photoUrl ? (
                   <Image
@@ -338,8 +350,9 @@ export function MemberDirectory({
                 </div>
               </div>
             </Link>
-          ))}
-        </div>
+          );
+        })}
+      </div>
       )}
     </section>
   );
