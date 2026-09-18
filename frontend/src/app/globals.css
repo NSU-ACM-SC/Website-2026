@@ -34,6 +34,8 @@ body {
   color: #000000;
   font-family: var(--font-site);
   overflow-x: hidden;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Prevent the native cursor flashing before the client cursor hydrates. */
@@ -149,22 +151,7 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1eee7;
-  border-left: 2px solid #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #000000;
-  border: 2px solid #f1eee7;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #f47b2b;
+  display: none;
 }
 
 /* Words Preloader Animation */
@@ -191,4 +178,40 @@ body {
     transform: none;
     opacity: 1;
   }
+}
+
+/* Logo Reveal Animation */
+@keyframes logoReveal {
+  0% { transform: translateX(101%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-logo-reveal {
+  display: inline-block;
+  animation: logoReveal 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
+/* Text Reveal Animation */
+@keyframes textReveal {
+  0% { transform: translateX(-101%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-text-reveal {
+  display: inline-block;
+  animation: textReveal 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
+/* Divider Scale Animation */
+@keyframes dividerScale {
+  0% { transform: scaleY(0); opacity: 0; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+.animate-divider-scale {
+  animation: dividerScale 0.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  will-change: transform, opacity;
+  transform-origin: center;
 }
