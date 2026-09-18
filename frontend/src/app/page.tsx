@@ -1,7 +1,7 @@
 import { WhyNSUACM } from "@/components/home/WhyNSUACM";
 import { LandingPreloader } from "@/components/home/LandingPreloader";
 import { CampusLocationMap } from "@/components/home/CampusLocationMap";
-import { NewsletterSubscribe } from "@/components/contact/NewsletterSubscribe";
+import { NewsLetterSubCard } from "@/components/newsletter/newsLetterSubCard";
 import { HeroSection } from "@/components/home/HeroSection";
 import { QuickStats } from "@/components/home/QuickStats";
 import { VideoFeature } from "@/components/home/VideoFeature";
@@ -22,10 +22,11 @@ export const metadata = { title: "Home | NSU ACM SC" };
 
 export default function HomePage() {
   return (
-    <div className="site-container">
+    <>
       <LandingPreloader />
       <HeroSection />
-      <QuickStats />
+      <div className="site-container pt-8 md:pt-16">
+        <QuickStats />
       <section className="statement">
         <div>
           <p className="eyebrow">01 / What is NSU ACM?</p>
@@ -128,7 +129,10 @@ export default function HomePage() {
       <WhyNSUACM />
       <VideoFeature />
       <CampusLocationMap />
-      <NewsletterSubscribe />
+      <div className="py-12 md:py-20 w-full">
+        <NewsLetterSubCard />
+      </div>
     </div>
+    </>
   );
 }
