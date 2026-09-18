@@ -63,9 +63,14 @@ export const memberSections = [
   { href: "/members", label: "Overview" },
   { href: "/members/panels", label: "Panel" },
   { href: "/members/core", label: "Core" },
-  { href: "/members/members(non-core)", label: "Non-Core" },
+  { href: "/members/non-core(team)", label: "Non-Core" },
   { href: "/members/alumni", label: "Alumni" },
   { href: "/members/allMembers", label: "All Members" },
+];
+
+export const nonCoreSections = [
+  { href: "/members/non-core(team)", label: "Teams" },
+  { href: "/members/non-core(sig)", label: "SIGs" },
 ];
 
 export function getMappedCoreMembers(supabaseMembers: ChapterMember[]): PublicMember[] {
@@ -129,13 +134,71 @@ export function getMappedCoreMembers(supabaseMembers: ChapterMember[]): PublicMe
   });
 }
 
-export function getMappedNonCoreMembers(supabaseMembers: ChapterMember[]): PublicMember[] {
+export function getMappedNonCoreTeamMembers(supabaseMembers: ChapterMember[]): PublicMember[] {
   const nonCoreSupabaseMembers = supabaseMembers.filter(
     (m) =>
       m.status !== "Executive" &&
       m.status !== "Advisor" &&
       m.status !== "Alumni" &&
       !(m.teamPosition && (m.teamPosition.includes("Sub-Executive") || m.teamPosition.includes("In-Charge"))) &&
+      !m.executivePosition
+  );
+
+  return nonCoreSupabaseMembers.map((m) => {
+    const teamRole = m.teamPosition;
+
+    const sigNames = m.sig && m.sig !== "—" ? m.sig.split(",").map(s => s.trim()) : [];
+    const sigRoles = m.sigPosition && m.sigPosition !== "—" ? m.sigPosition.split(",").map(r => r.trim()) : [];
+    const sigs = sigNames.map((name, index) => ({
+      name: name as any,
+      role: (sigRoles[index] || sigRoles[0] || m.sigPosition) as any
+    }));
+
+    const possibleRoles = [m.executivePosition, teamRole, m.sigPosition].filter(
+      Boolean
+    ) as string[];
+
+    const position =
+      possibleRoles.sort(
+        (a, b) =>
+          (roleOrder.indexOf(a as any) !== -1
+            ? roleOrder.indexOf(a as any)
+            : 999) -
+          (roleOrder.indexOf(b as any) !== -1
+            ? roleOrder.indexOf(b as any)
+            : 999)
+      )[0] || "General Member";
+
+    return {
+      id: m.id,
+      name: m.name,
+      team: m.team as any,
+      position: position as any,
+      sigs: sigs,
+      teamRole: teamRole as any,
+      chapterRole: m.executivePosition as any,
+      joinYear: m.semesterJoined
+        ? parseInt(
+          m.semesterJoined.match(/\d{4}/)?.[0] ||
+          new Date().getFullYear().toString()
+        )
+        : new Date().getFullYear(),
+      status: (m.status as any) || "Active",
+      photoUrl: m.photoUrl,
+      email: m.email,
+      facebook: m.facebook,
+      linkedin: m.linkedin,
+      github: m.github,
+    };
+  });
+}
+
+export function getMappedNonCoreSigMembers(supabaseMembers: ChapterMember[]): PublicMember[] {
+  const nonCoreSupabaseMembers = supabaseMembers.filter(
+    (m) =>
+      m.status !== "Executive" &&
+      m.status !== "Advisor" &&
+      m.status !== "Alumni" &&
       !(m.sigPosition && (m.sigPosition.includes("Coordinator") || m.sigPosition.includes("Moderator"))) &&
       !m.executivePosition
   );
