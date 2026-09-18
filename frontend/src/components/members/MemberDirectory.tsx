@@ -234,11 +234,11 @@ export function MemberDirectory({
             }
 
             return (
-              <Link
-                href={`/members/${member.id}`}
+              <div
                 key={member.id}
-                className={`${colClasses} group flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200`}
+                className={`${colClasses} group relative flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200`}
               >
+                <Link href={`/members/${member.id}`} className="absolute inset-0 z-0" aria-label={`View ${member.name}'s profile`} />
                 {/* Top Image Section */}
               <div className="relative w-full aspect-[1/1] border-b-[3px] border-black bg-gray-200 shrink-0">
                 {member.photoUrl ? (
@@ -255,12 +255,7 @@ export function MemberDirectory({
                   </div>
                 )}
 
-                {/* Floating Pill Tag (Top Right) */}
-                {member.sigs.length > 0 && (
-                  <div className="absolute top-4 right-4 bg-white text-black border-2 border-black rounded-full font-bold text-[10px] px-3 py-1 shadow-[2px_2px_0px_#000] uppercase tracking-wide z-10">
-                    SIG / {activeSigContext || member.sigs[0].name}
-                  </div>
-                )}
+                {/* Floating Pill Tag removed as requested */}
               </div>
 
               {/* Bottom Content Section */}
@@ -277,7 +272,7 @@ export function MemberDirectory({
                         .filter((sig) => sig.name === activeSigContext)
                         .map((sig, idx) => (
                           <p key={`primary-${idx}`} className="font-bold">
-                            {sig.role} {sig.name}
+                            {sig.role}, {sig.name}
                           </p>
                         ))}
                       {/* Show other SIGs if any */}
@@ -285,7 +280,7 @@ export function MemberDirectory({
                         .filter((sig) => sig.name !== activeSigContext)
                         .map((sig, idx) => (
                           <p key={`other-${idx}`}>
-                            {sig.role} {sig.name}
+                            {sig.role}, {sig.name}
                           </p>
                         ))}
                       {/* Show Team role underneath */}
@@ -312,7 +307,7 @@ export function MemberDirectory({
                       {member.sigs.length > 0 &&
                         member.sigs.map((sig, idx) => (
                           <p key={idx}>
-                            {sig.role} {sig.name}
+                            {sig.role}, {sig.name}
                           </p>
                         ))}
                     </>
@@ -327,29 +322,29 @@ export function MemberDirectory({
                   {/* Social Links Row in Footer */}
                   <div className={`flex gap-3 min-h-[36px] ${centerCardContent ? 'justify-center' : ''}`}>
                     {member.github && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="GitHub">
+                      <a href={member.github} target="_blank" rel="noopener noreferrer" className="relative z-10 w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="GitHub">
                         <GithubIcon size={18} />
-                      </div>
+                      </a>
                     )}
                     {member.linkedin && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="LinkedIn">
+                      <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="relative z-10 w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="LinkedIn">
                         <LinkedinIcon size={18} />
-                      </div>
+                      </a>
                     )}
                     {member.facebook && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Facebook">
+                      <a href={member.facebook} target="_blank" rel="noopener noreferrer" className="relative z-10 w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Facebook">
                         <FacebookIcon size={18} />
-                      </div>
+                      </a>
                     )}
                     {member.email && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Email">
+                      <a href={`mailto:${member.email}`} className="relative z-10 w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Email">
                         <Mail size={18} />
-                      </div>
+                      </a>
                     )}
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
           );
         })}
       </div>
