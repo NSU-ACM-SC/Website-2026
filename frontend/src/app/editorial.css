@@ -263,6 +263,7 @@
   list-style: none;
   padding: 0;
   border: 2px solid;
+  background-color: #ffffff;
 }
 .role-list li {
   display: flex;

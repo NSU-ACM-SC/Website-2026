@@ -13,8 +13,11 @@ export function SectionTitle({
   centered?: boolean;
 }) {
   return (
-    <div className="section-title">
-      <div>
+    <div 
+      className={`section-title ${centered ? "flex flex-col text-center" : ""}`}
+      style={centered ? { alignItems: 'center', justifyContent: 'center' } : undefined}
+    >
+      <div className={centered ? "flex flex-col items-center" : ""}>
         <span className="eyebrow">{number}</span>
         <h2>{title}</h2>
       </div>

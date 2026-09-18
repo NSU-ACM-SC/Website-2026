@@ -10,16 +10,22 @@ import {
 import {
   ArrowUpRight,
   Download,
-  LayoutGrid,
-  List,
   RotateCcw,
   Search,
   Mail,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { PublicMemberTable } from "./PublicMemberTable";
+import { useState, useEffect } from "react";
+import { fetchChapterMembers } from "@/lib/supabaseMembers";
+import {
+  getMappedPanelMembers,
+  getMappedCoreMembers,
+  getMappedNonCoreTeamMembers,
+  getMappedNonCoreSigMembers,
+  getMappedAlumniMembers,
+  getMappedAllMembers,
+} from "@/data/memberGroups";
 
 type Props = {
   membersData: PublicMember[];
@@ -28,6 +34,17 @@ type Props = {
   centerCardContent?: boolean;
   overrideTeamName?: string;
   activeSigContext?: string;
+  fetchCategory?: 
+    | "panels-faculty" 
+    | "panels-executive" 
+    | "core-team" 
+    | "core-sig" 
+    | "non-core-team" 
+    | "non-core-sig" 
+    | "alumni" 
+    | "roster";
+  rosterTeamName?: string;
+  rosterSigName?: string;
 };
 
 function valuesFor(
@@ -52,11 +69,57 @@ export function MemberDirectory({
   centerCardContent = false,
   overrideTeamName,
   activeSigContext,
+  fetchCategory,
+  rosterTeamName,
+  rosterSigName,
 }: Props) {
+  const [liveMembersData, setLiveMembersData] = useState<PublicMember[]>(membersData);
+  const [mountTime] = useState(() => Date.now());
+
+  useEffect(() => {
+    async function loadLiveMembers() {
+      if (!fetchCategory) return;
+      const { members, isLiveSupabase } = await fetchChapterMembers();
+      if (!isLiveSupabase || !members || members.length === 0) return;
+
+      let updated: PublicMember[] = [];
+      switch (fetchCategory) {
+        case "panels-faculty":
+          updated = getMappedPanelMembers(members).filter(m => m.chapterRole === "Faculty Advisor");
+          break;
+        case "panels-executive":
+          updated = getMappedPanelMembers(members).filter(m => m.chapterRole !== "Faculty Advisor");
+          break;
+        case "core-team":
+        case "core-sig":
+          updated = getMappedCoreMembers(members);
+          break;
+        case "non-core-team":
+          updated = getMappedNonCoreTeamMembers(members);
+          break;
+        case "non-core-sig":
+          updated = getMappedNonCoreSigMembers(members);
+          break;
+        case "alumni":
+          updated = getMappedAlumniMembers(members);
+          break;
+        case "roster":
+          updated = getMappedAllMembers(members).filter((member) =>
+            rosterTeamName
+              ? member.team === rosterTeamName
+              : member.sigs.some((sig) => sig.name === rosterSigName)
+          );
+          break;
+      }
+      if (updated.length > 0) {
+        setLiveMembersData(updated);
+      }
+    }
+    loadLiveMembers();
+  }, [fetchCategory, rosterTeamName, rosterSigName]);
+
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const [view, setView] = useState(defaultView);
-  const [page, setPage] = useState(1);
   const [sort, setSort] = useState("role");
   const fields = [
     { key: "team", label: "Team" },
@@ -65,7 +128,7 @@ export function MemberDirectory({
     { key: "sigs", label: "SIG" },
     { key: "status", label: "Status" },
   ] as const;
-  const filtered = membersData
+  const filtered = liveMembersData
     .filter(
       (member) =>
         [
@@ -91,13 +154,11 @@ export function MemberDirectory({
           ? b.joinYear - a.joinYear || a.name.localeCompare(b.name)
           : a.name.localeCompare(b.name),
     );
-  const pages = Math.max(1, Math.ceil(filtered.length / 9));
-  const visible = filtered.slice((page - 1) * 9, page * 9);
+  const visible = filtered;
   function reset() {
     setQuery("");
     setFilters({});
     setSort("role");
-    setPage(1);
   }
   function exportCsv() {
     const cell = (value: string | number) =>
@@ -138,9 +199,6 @@ export function MemberDirectory({
   }
   return (
     <section aria-label="Member directory">
-      <p className="notice">
-        Preview roster. Roles and group assignments await chapter confirmation.
-      </p>
       {showControls && (
         <>
           <div className="directory-toolbar">
@@ -152,7 +210,6 @@ export function MemberDirectory({
                 value={query}
                 onChange={(event) => {
                   setQuery(event.target.value);
-                  setPage(1);
                 }}
               />
             </label>
@@ -177,13 +234,12 @@ export function MemberDirectory({
                   value={filters[key] || ""}
                   onChange={(event) => {
                     setFilters({ ...filters, [key]: event.target.value });
-                    setPage(1);
                   }}
                 >
                   <option value="">All</option>
                   {[
                     ...new Set(
-                      membersData.flatMap((member) => valuesFor(member, key)),
+                      liveMembersData.flatMap((member) => valuesFor(member, key)),
                     ),
                   ]
                     .sort()
@@ -199,7 +255,6 @@ export function MemberDirectory({
                 value={sort}
                 onChange={(event) => {
                   setSort(event.target.value);
-                  setPage(1);
                 }}
               >
                 <option value="name">Name A–Z</option>
@@ -210,26 +265,13 @@ export function MemberDirectory({
           </div>
         </>
       )}
-      <div className="directory-toolbar">
-        <p className="result-count" aria-live="polite">
-          {filtered.length} members · Page {page} of {pages}
+      <div 
+        className={`directory-toolbar ${centerCardContent ? 'border-none mb-6' : ''}`}
+        style={centerCardContent ? { justifyContent: 'center' } : undefined}
+      >
+        <p className={`result-count ${centerCardContent ? 'text-center w-full' : ''}`} aria-live="polite">
+          {filtered.length} members
         </p>
-        <div className="filter-tabs">
-          <button
-            aria-label="Card view"
-            aria-pressed={view === "cards"}
-            onClick={() => setView("cards")}
-          >
-            <LayoutGrid size={18} />
-          </button>
-          <button
-            aria-label="Table view"
-            aria-pressed={view === "table"}
-            onClick={() => setView("table")}
-          >
-            <List size={18} />
-          </button>
-        </div>
       </div>
       {!visible.length ? (
         <div className="empty-state">
@@ -239,27 +281,37 @@ export function MemberDirectory({
             Reset filters
           </button>
         </div>
-      ) : view === "table" ? (
-        <PublicMemberTable members={visible} />
       ) : (
-        <div
-          className={`grid gap-6 ${
-            visible.length === 1
-              ? "grid-cols-1 max-w-sm mx-auto w-full"
-              : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-          }`}
-        >
-          {visible.map((member) => (
-            <Link
-              href={`/members/${member.id}`}
-              key={member.id}
-              className="group flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200"
-            >
-              {/* Top Image Section */}
+        <div className="grid grid-cols-12 gap-6 mx-auto w-full">
+          {visible.map((member, index) => {
+            const total = visible.length;
+            const isLastItemMd = total % 2 === 1 && index === total - 1;
+            const isLastRowSingleXl = total % 3 === 1 && index === total - 1;
+            const isLastRowDoubleFirstXl = total % 3 === 2 && index === total - 2;
+
+            let colClasses = "col-span-12 md:col-span-6 xl:col-span-4";
+
+            if (isLastItemMd) colClasses += " md:col-start-4";
+            
+            if (isLastRowSingleXl) {
+              colClasses += " xl:col-start-5";
+            } else if (isLastRowDoubleFirstXl) {
+              colClasses += " xl:col-start-3";
+            } else if (isLastItemMd) {
+              colClasses += " xl:col-start-auto";
+            }
+
+            return (
+              <div
+                key={member.id}
+                className={`${colClasses} group relative flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200`}
+              >
+                <Link href={`/members/${member.id}`} className="absolute inset-0 z-10" aria-label={`View ${member.name}'s profile`} />
+                {/* Top Image Section */}
               <div className="relative w-full aspect-[1/1] border-b-[3px] border-black bg-gray-200 shrink-0">
                 {member.photoUrl ? (
                   <Image
-                    src={member.photoUrl}
+                    src={member.photoUrl.includes('?') ? member.photoUrl : `${member.photoUrl}?v=${mountTime}`}
                     alt={member.name}
                     fill
                     className="object-cover object-top"
@@ -271,115 +323,110 @@ export function MemberDirectory({
                   </div>
                 )}
 
-                {/* Floating Pill Tag (Top Right) */}
-                {member.sigs.length > 0 && (
-                  <div className="absolute top-4 right-4 bg-white text-black border-2 border-black rounded-full font-bold text-[10px] px-3 py-1 shadow-[2px_2px_0px_#000] uppercase tracking-wide z-10">
-                    SIG / {activeSigContext || member.sigs[0].name}
-                  </div>
-                )}
+                {/* Floating Pill Tag removed as requested */}
               </div>
 
               {/* Bottom Content Section */}
-              <div className={`flex flex-col flex-1 p-6 ${centerCardContent ? 'text-center' : ''}`}>
-                {/* Name and Subtitle */}
-                <h3 className="text-2xl md:text-3xl font-black leading-[1.1] tracking-tighter capitalize mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <div className={`flex flex-col flex-1 p-6 ${centerCardContent ? 'items-center text-center' : 'items-start'}`}>
+                {/* Name */}
+                <h3 className="text-2xl md:text-[26px] font-black uppercase leading-tight tracking-tighter mb-4 text-black" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                   {member.name}
                 </h3>
-                <div className="font-sans text-[13px] font-medium text-gray-800 mb-5 flex flex-col gap-0.5">
+                
+                {/* Roles (Neo-brutalist Badges) */}
+                <div className={`flex flex-wrap gap-2.5 mb-6 ${centerCardContent ? 'justify-center' : ''}`}>
                   {activeSigContext ? (
                     <>
                       {/* Priority SIG context */}
                       {member.sigs
                         .filter((sig) => sig.name === activeSigContext)
                         .map((sig, idx) => (
-                          <p key={`primary-${idx}`} className="font-bold">
-                            {sig.role} {sig.name}
-                          </p>
+                          <div key={`primary-${idx}`} className="bg-[#f47b2b] text-white border-2 border-black rounded-md shadow-[2px_2px_0px_#000] px-2.5 py-1 text-xs font-black uppercase tracking-wider">
+                            {sig.role}, {sig.name}
+                          </div>
                         ))}
                       {/* Show other SIGs if any */}
                       {member.sigs
                         .filter((sig) => sig.name !== activeSigContext)
                         .map((sig, idx) => (
-                          <p key={`other-${idx}`}>
-                            {sig.role} {sig.name}
-                          </p>
+                          <div key={`other-${idx}`} className="bg-[#3392cc] text-white border-2 border-black rounded-md shadow-[2px_2px_0px_#000] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+                            {sig.role}, {sig.name}
+                          </div>
                         ))}
                       {/* Show Team role underneath */}
-                      <p>
+                      <div className="bg-[#ffde59] text-black border-2 border-black rounded-md shadow-[2px_2px_0px_#000] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
                         {member.chapterRole || member.teamRole || "Member"}
                         {overrideTeamName
                           ? `, ${overrideTeamName}`
                           : member.team && (member.team as string) !== "—"
                           ? `, ${member.team}`
                           : ""}
-                      </p>
+                      </div>
                     </>
                   ) : (
                     <>
-                      {/* Default layout */}
-                      <p>
+                      {/* Default layout: Match the active SIG layout style */}
+                      {member.sigs.length > 0 && (
+                        <>
+                          <div className="bg-[#f47b2b] text-white border-2 border-black rounded-md shadow-[2px_2px_0px_#000] px-2.5 py-1 text-xs font-black uppercase tracking-wider">
+                            {member.sigs[0].role}, {member.sigs[0].name}
+                          </div>
+                          {member.sigs.slice(1).map((sig, idx) => (
+                            <div key={`other-${idx}`} className="bg-[#3392cc] text-white border-2 border-black rounded-md shadow-[2px_2px_0px_#000] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+                              {sig.role}, {sig.name}
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      
+                      {/* Team / Chapter Role */}
+                      <div className="bg-[#ffde59] text-black border-2 border-black rounded-md shadow-[2px_2px_0px_#000] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
                         {member.chapterRole || member.teamRole || "Member"}
                         {overrideTeamName
                           ? `, ${overrideTeamName}`
                           : member.team && (member.team as string) !== "—"
                           ? `, ${member.team}`
                           : ""}
-                      </p>
-                      {member.sigs.length > 0 &&
-                        member.sigs.map((sig, idx) => (
-                          <p key={idx}>
-                            {sig.role} {sig.name}
-                          </p>
-                        ))}
+                      </div>
                     </>
                   )}
                 </div>
 
                 {/* Spacer to push footer to bottom */}
-                <div className="mt-auto">
-                  {/* Divider */}
-                  <div className="h-[2px] bg-black w-full mb-4"></div>
+                <div className="mt-auto w-full relative z-20">
+                  {/* Heavy Brutalist Divider */}
+                  <div className="h-[3px] bg-black w-full mb-5"></div>
 
-                  {/* Social Links Row in Footer */}
+                  {/* Social Links Row in Footer (Brutalist Press Buttons) */}
                   <div className={`flex gap-3 min-h-[36px] ${centerCardContent ? 'justify-center' : ''}`}>
                     {member.github && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="GitHub">
+                      <a href={member.github} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center bg-white border-[2.5px] border-black rounded-md text-black shadow-[3px_3px_0px_#000] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none hover:bg-[#ffde59] transition-all duration-75" title="GitHub">
                         <GithubIcon size={18} />
-                      </div>
+                      </a>
                     )}
                     {member.linkedin && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="LinkedIn">
+                      <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center bg-white border-[2.5px] border-black rounded-md text-black shadow-[3px_3px_0px_#000] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none hover:bg-[#3392cc] hover:text-white transition-all duration-75" title="LinkedIn">
                         <LinkedinIcon size={18} />
-                      </div>
+                      </a>
                     )}
                     {member.facebook && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Facebook">
+                      <a href={member.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center bg-white border-[2.5px] border-black rounded-md text-black shadow-[3px_3px_0px_#000] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none hover:bg-[#1877F2] hover:text-white transition-all duration-75" title="Facebook">
                         <FacebookIcon size={18} />
-                      </div>
+                      </a>
                     )}
                     {member.email && (
-                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Email">
+                      <a href={`mailto:${member.email}`} className="w-10 h-10 flex items-center justify-center bg-white border-[2.5px] border-black rounded-md text-black shadow-[3px_3px_0px_#000] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-none hover:bg-[#f47b2b] hover:text-white transition-all duration-75" title="Email">
                         <Mail size={18} />
-                      </div>
+                      </a>
                     )}
                   </div>
                 </div>
               </div>
-            </Link>
-          ))}
-        </div>
+            </div>
+          );
+        })}
+      </div>
       )}
-      <nav className="pagination" aria-label="Member pages">
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Previous
-        </button>
-        <span>
-          {page} / {pages}
-        </span>
-        <button disabled={page >= pages} onClick={() => setPage(page + 1)}>
-          Next
-        </button>
-      </nav>
     </section>
   );
 }

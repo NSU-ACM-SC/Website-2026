@@ -8,13 +8,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 
 type Props = {
   membersData: PublicMember[];
-  teams: string[];
+  sigs: string[];
 };
 
-export function CoreMembersTabs({ membersData, teams }: Props) {
+export function CoreSigTabs({ membersData, sigs }: Props) {
   const [liveData, setLiveData] = useState<PublicMember[]>(membersData);
   const [positionFilter, setPositionFilter] = useState<string>("All");
-  const [teamFilter, setTeamFilter] = useState<string>("All");
+  const [sigFilter, setSigFilter] = useState<string>("All");
 
   useEffect(() => {
     async function load() {
@@ -26,19 +26,19 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
     load();
   }, []);
 
-  const filterMember = (member: PublicMember, role: string, team: string) => {
-    return member.teamRole === role && member.team === team;
+  const filterMember = (member: PublicMember, role: string, sigName: string) => {
+    return member.sigs.some(s => s.role === role && s.name === sigName);
   };
 
-  const showSubExecutives = positionFilter === "All" || positionFilter === "Sub Executive";
-  const showInCharges = positionFilter === "All" || positionFilter === "InCharge";
+  const showCoordinators = positionFilter === "All" || positionFilter === "Coordinator";
+  const showModerators = positionFilter === "All" || positionFilter === "Moderator";
 
   const renderSection = (title: string, role: string, number: string) => {
-    const teamsToRender = teamFilter === "All" ? teams : [teamFilter];
+    const sigsToRender = sigFilter === "All" ? sigs : [sigFilter];
     
     // Check if there are any members in this entire section based on current filters
-    const hasMembers = teamsToRender.some(team => 
-      liveData.some(m => filterMember(m, role, team))
+    const hasMembers = sigsToRender.some(sig => 
+      liveData.some(m => filterMember(m, role, sig))
     );
 
     if (!hasMembers) return null;
@@ -48,18 +48,19 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
         <SectionTitle number={number} title={title} centered={true} />
         
         <div className="flex flex-col gap-12 mt-12">
-          {teamsToRender.map(team => {
-            const teamMembers = liveData.filter(m => filterMember(m, role, team));
+          {sigsToRender.map(sig => {
+            const sigMembers = liveData.filter(m => filterMember(m, role, sig));
             
-            if (teamMembers.length === 0) return null;
+            if (sigMembers.length === 0) return null;
             
             return (
-              <div key={team}>
-                <h3 className="text-2xl font-black mb-6 text-center uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{team}</h3>
+              <div key={sig}>
+                <h3 className="text-2xl font-black mb-6 text-center uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{sig}</h3>
                 <MemberDirectory 
-                  membersData={teamMembers}
+                  membersData={sigMembers}
                   showControls={false}
                   centerCardContent={true}
+                  activeSigContext={sig}
                 />
               </div>
             );
@@ -76,33 +77,33 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
           Position
           <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)}>
             <option value="All">All Positions</option>
-            <option value="Sub Executive">Sub-Executives</option>
-            <option value="InCharge">In-Charges</option>
+            <option value="Coordinator">Coordinators</option>
+            <option value="Moderator">Moderators</option>
           </select>
         </label>
         
         <label className="select-field">
-          Team
-          <select value={teamFilter} onChange={(e) => setTeamFilter(e.target.value)}>
-            <option value="All">All Teams</option>
-            {teams.map(t => (
-              <option key={t} value={t}>{t}</option>
+          SIG
+          <select value={sigFilter} onChange={(e) => setSigFilter(e.target.value)}>
+            <option value="All">All SIGs</option>
+            {sigs.map(s => (
+              <option key={s} value={s}>{s}</option>
             ))}
           </select>
         </label>
       </div>
 
       <div className="mt-4">
-        {showSubExecutives && renderSection("Sub-Executives", "Sub Executive", "01 / Leadership")}
-        {showInCharges && renderSection("In-Charges", "InCharge", "02 / Leadership")}
+        {showCoordinators && renderSection("Coordinators", "Coordinator", "01 / Leadership")}
+        {showModerators && renderSection("Moderators", "Moderator", "02 / Leadership")}
         
-        {(!showSubExecutives && !showInCharges) || (showSubExecutives && renderSection("Sub-Executives", "Sub Executive", "01 / Leadership") === null && showInCharges && renderSection("In-Charges", "InCharge", "02 / Leadership") === null) ? (
+        {(!showCoordinators && !showModerators) || (showCoordinators && renderSection("Coordinators", "Coordinator", "01 / Leadership") === null && showModerators && renderSection("Moderators", "Moderator", "02 / Leadership") === null) ? (
           <div className="empty-state text-center py-12">
             <h2>No members found.</h2>
             <p>Try clearing your filters.</p>
             <button 
               className="outline-button mx-auto mt-4" 
-              onClick={() => { setPositionFilter("All"); setTeamFilter("All"); }}
+              onClick={() => { setPositionFilter("All"); setSigFilter("All"); }}
             >
               Reset filters
             </button>

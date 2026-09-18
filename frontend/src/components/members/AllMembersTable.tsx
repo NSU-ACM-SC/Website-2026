@@ -46,6 +46,36 @@ type SortField =
 
 type SortDirection = "asc" | "desc";
 
+const formatRoles = (positionsStr: string | undefined | null, groupsStr: string | undefined | null, isTeam: boolean) => {
+  if (!positionsStr || !groupsStr || groupsStr === "—" || groupsStr === "None") return null;
+  
+  const positions = positionsStr.split(",").map((s) => s.trim());
+  const groups = groupsStr.split(",").map((s) => s.trim());
+  
+  const maxLength = Math.max(positions.length, groups.length);
+  const result = [];
+  
+  for (let i = 0; i < maxLength; i++) {
+    const pos = positions[i] || positions[positions.length - 1] || "General Member";
+    const group = groups[i] || groups[groups.length - 1] || "—";
+    
+    if (group === "—" || group === "None" || (isTeam && (group === "Advisory" || group === "Executive Body"))) continue;
+    
+    if (isTeam && !group.toLowerCase().includes("team")) {
+      result.push(<span key={`${isTeam ? 'team' : 'sig'}-${i}`}>{pos}, Team {group}</span>);
+    } else {
+      result.push(<span key={`${isTeam ? 'team' : 'sig'}-${i}`}>{pos}, {group}</span>);
+    }
+  }
+  
+  if (result.length === 0) return null;
+
+  return result.reduce((acc, curr, idx) => {
+    if (idx === 0) return [curr];
+    return [...acc, <span key={`sep-${isTeam ? 'team' : 'sig'}-${idx}`} className="text-neutral-400 font-normal px-1.5">|</span>, curr];
+  }, [] as React.ReactNode[]);
+};
+
 export function AllMembersTable() {
   const [members, setMembers] = useState<ChapterMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -526,21 +556,8 @@ export function AllMembersTable() {
             )}
           </div>
 
-          {/* Hierarchy Sort Button & Reset */}
+          {/* Reset Button */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleSortToggle("hierarchy")}
-              className={`px-3 py-2.5 text-xs font-bold uppercase tracking-wider border-2 border-black transition-all flex items-center gap-1.5 ${sortField === "hierarchy"
-                ? "bg-black text-white neo-shadow-sm"
-                : "bg-white hover:bg-neutral-100 text-black"
-                }`}
-              title="Sort by official chapter hierarchy: EB -> Sub-Exec / Coord -> In-Charge / Mod -> Members"
-            >
-              <Crown size={14} className="text-[#ffde59]" />
-              <span>Hierarchy Order</span>
-              {sortField === "hierarchy" && renderSortIndicator("hierarchy")}
-            </button>
-
             {hasActiveFilters && (
               <button
                 onClick={handleReset}
@@ -554,39 +571,13 @@ export function AllMembersTable() {
           </div>
         </div>
 
-        {/* Quick Category Chips */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-neutral-500 mr-1">
-            Category:
-          </span>
-          {[
-            { key: "all", label: "All Members" },
-            { key: "executive", label: "Executive Body" },
-            { key: "advisor", label: "Faculty Advisor" },
-            { key: "core", label: "Core Leaders" },
-            { key: "general", label: "General Members" },
-          ].map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => {
-                setCategoryFilter(cat.key as any);
-                setPage(1);
-              }}
-              className={`px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 transition-all ${categoryFilter === cat.key
-                ? "bg-[#f47b2b] text-white border-black neo-shadow-sm -translate-y-0.5"
-                : "bg-white text-black border-neutral-300 hover:border-black"
-                }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
+
 
         {/* Multi-Criteria Filters Bar */}
         <div className="p-4 bg-white border-2 border-black neo-shadow-sm space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-black">
             <Filter size={14} className="text-[#f47b2b]" />
-            <span>Refine Filters</span>
+            <span>Filters</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
@@ -637,7 +628,7 @@ export function AllMembersTable() {
             {/* Team Position Filter */}
             <div className="space-y-1">
               <label className="block font-bold text-neutral-700 uppercase tracking-wider">
-                Team Position (Order)
+                Team Position
               </label>
               <select
                 value={teamPositionFilter}
@@ -681,7 +672,7 @@ export function AllMembersTable() {
             {/* SIG Position Filter */}
             <div className="space-y-1">
               <label className="block font-bold text-neutral-700 uppercase tracking-wider">
-                SIG Position (Order)
+                SIG Position
               </label>
               <select
                 value={sigPositionFilter}
@@ -741,12 +732,12 @@ export function AllMembersTable() {
         role="region"
         aria-label="Chapter Member Directory Table"
       >
-        <table className="w-full border-collapse text-left text-xs min-w-[840px]">
+        <table className="w-full border-collapse text-left text-sm min-w-[840px]">
           <caption className="sr-only">
             NSU ACM SC Master Members Roster Table with Team, SIG, Executive Body, and Contact Links
           </caption>
           <thead>
-            <tr className="bg-black text-[#f1eee7] uppercase tracking-wider font-extrabold text-[11px] select-none">
+            <tr className="bg-black text-[#f1eee7] uppercase tracking-wider font-extrabold text-xs select-none">
               {/* Column 1: Name */}
               <th
                 scope="col"
@@ -771,52 +762,12 @@ export function AllMembersTable() {
                 </div>
               </th>
 
-              {/* Column 3: Team */}
+              {/* Column 3: Position */}
               <th
                 scope="col"
-                className="p-3.5 border-b border-black cursor-pointer hover:bg-neutral-900 transition-colors w-[150px]"
-                onClick={() => handleSortToggle("team")}
+                className="p-3.5 border-b border-black text-left"
               >
-                <div className="flex items-center justify-between">
-                  <span>Team</span>
-                  {renderSortIndicator("team")}
-                </div>
-              </th>
-
-              {/* Column 4: Team Position */}
-              <th
-                scope="col"
-                className="p-3.5 border-b border-black cursor-pointer hover:bg-neutral-900 transition-colors w-[170px]"
-                onClick={() => handleSortToggle("teamPosition")}
-              >
-                <div className="flex items-center justify-between">
-                  <span>Team Position</span>
-                  {renderSortIndicator("teamPosition")}
-                </div>
-              </th>
-
-              {/* Column 5: SIG */}
-              <th
-                scope="col"
-                className="p-3.5 border-b border-black cursor-pointer hover:bg-neutral-900 transition-colors w-[190px]"
-                onClick={() => handleSortToggle("sig")}
-              >
-                <div className="flex items-center justify-between">
-                  <span>SIG</span>
-                  {renderSortIndicator("sig")}
-                </div>
-              </th>
-
-              {/* Column 6: SIG Position */}
-              <th
-                scope="col"
-                className="p-3.5 border-b border-black cursor-pointer hover:bg-neutral-900 transition-colors w-[160px]"
-                onClick={() => handleSortToggle("sigPosition")}
-              >
-                <div className="flex items-center justify-between">
-                  <span>SIG Position</span>
-                  {renderSortIndicator("sigPosition")}
-                </div>
+                <span>Position</span>
               </th>
 
               {/* Column 7: Connect Icons */}
@@ -831,7 +782,7 @@ export function AllMembersTable() {
           <tbody className="divide-y divide-black/20">
             {currentPageMembers.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-8 text-center bg-[#fdfbf7]">
+                <td colSpan={4} className="p-8 text-center bg-[#fdfbf7]">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <AlertCircle size={28} className="text-[#f47b2b]" />
                     <p className="font-bold text-sm text-black">No members match your criteria.</p>
@@ -858,22 +809,6 @@ export function AllMembersTable() {
                     {/* 1. Name */}
                     <td className="p-3.5 font-bold text-black border-r border-black/10">
                       <div className="flex items-center gap-2">
-                        {isExecutive ? (
-                          <span
-                            className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#ffde59] text-black border border-black shrink-0"
-                            title={`Executive Body: ${member.executivePosition}`}
-                          >
-                            <Crown size={12} className="text-[#b25300]" />
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-300 text-[10px] font-bold shrink-0">
-                            {member.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .slice(0, 2)
-                              .join("")}
-                          </span>
-                        )}
                         <Link
                           href={`/members/${member.id}`}
                           className="hover:text-[#f47b2b] hover:underline underline-offset-2 transition-colors"
@@ -888,84 +823,34 @@ export function AllMembersTable() {
                       {member.nsuId}
                     </td>
 
-                    {/*
-                      EXECUTIVE BODY MERGE RULE:
-                      If member has an Executive Position:
-                      Merge Team, Team position, Sig, Sig position into 1 cell (colSpan={4})
-                      and write "Position (Executive Body)" with the role!
-                    */}
-                    {isExecutive ? (
-                      <td
-                        colSpan={4}
-                        className="p-3.5 border-r border-black/10 bg-[#fff5db]/80 text-black"
-                      >
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-black text-white font-extrabold text-[10px] uppercase tracking-wider border border-black shadow-[2px_2px_0_#f47b2b]">
-                            <ShieldCheck size={11} className="text-[#ffde59]" />
-                            Position (Executive Body)
-                          </span>
-                          <span className="font-extrabold text-xs text-[#8a3b00] uppercase tracking-wide">
-                            {member.executivePosition}
-                          </span>
+                    {/* 3. Position */}
+                    <td className="p-3.5 border-r border-black/10 text-black text-xs font-semibold">
+                      {isExecutive ? (
+                        <span className="text-[#8a3b00] uppercase font-bold tracking-wide">
+                          {member.executivePosition}, NSU ACM SC
+                        </span>
+                      ) : (
+                        <div className="flex flex-wrap items-center">
+                          {(() => {
+                            const teams = formatRoles(member.teamPosition as string, member.team, true);
+                            const sigs = formatRoles(member.sigPosition as string, member.sig, false);
+                            
+                            if (teams && sigs) {
+                              return (
+                                <>
+                                  {teams}
+                                  <span className="text-neutral-400 font-normal px-1.5">|</span>
+                                  {sigs}
+                                </>
+                              );
+                            }
+                            if (teams) return teams;
+                            if (sigs) return sigs;
+                            return <span className="text-neutral-400 italic font-normal">—</span>;
+                          })()}
                         </div>
-                      </td>
-                    ) : (
-                      <>
-                        {/* 3. Team */}
-                        <td className="p-3.5 border-r border-black/10 whitespace-nowrap font-medium text-black">
-                          <span className="inline-block px-2 py-0.5 bg-[#f1eee7] text-neutral-800 border border-black text-[11px] font-semibold">
-                            {member.team || "—"}
-                          </span>
-                        </td>
-
-                        {/* 4. Team Position */}
-                        <td className="p-3.5 border-r border-black/10 whitespace-nowrap">
-                          <span
-                            className={`inline-block px-2 py-0.5 border text-[11px] font-bold uppercase tracking-wider ${member.teamPosition === "Sub-Executive"
-                              ? "bg-[#5227ff]/15 text-[#3b19b8] border-[#5227ff]"
-                              : member.teamPosition === "In-Charge"
-                                ? "bg-[#3392cc]/15 text-[#1f638d] border-[#3392cc]"
-                                : member.teamPosition === "Senior Member"
-                                  ? "bg-[#00d084]/20 text-[#006e42] border-[#00d084]"
-                                  : member.teamPosition === "General Member"
-                                    ? "bg-neutral-100 text-neutral-800 border-neutral-400"
-                                    : "bg-neutral-50 text-neutral-500 border-neutral-300"
-                              }`}
-                          >
-                            {member.teamPosition}
-                          </span>
-                        </td>
-
-                        {/* 5. SIG */}
-                        <td className="p-3.5 border-r border-black/10 text-neutral-800 font-medium">
-                          {member.sig && member.sig !== "—" && member.sig !== "None" ? (
-                            <span className="text-xs">{member.sig}</span>
-                          ) : (
-                            <span className="text-neutral-400 italic">No SIG</span>
-                          )}
-                        </td>
-
-                        {/* 6. SIG Position */}
-                        <td className="p-3.5 border-r border-black/10 whitespace-nowrap">
-                          {member.sig && member.sig !== "—" && member.sig !== "None" ? (
-                            <span
-                              className={`inline-block px-2 py-0.5 border text-[11px] font-bold uppercase tracking-wider ${member.sigPosition === "Coordinator"
-                                ? "bg-[#f47b2b]/15 text-[#b04a07] border-[#f47b2b]"
-                                : member.sigPosition === "Moderator"
-                                  ? "bg-[#ffde59]/30 text-[#856b00] border-[#bda000]"
-                                  : member.sigPosition === "Senior Member"
-                                    ? "bg-[#00d084]/20 text-[#006e42] border-[#00d084]"
-                                    : "bg-neutral-100 text-neutral-800 border-neutral-400"
-                                }`}
-                            >
-                              {member.sigPosition}
-                            </span>
-                          ) : (
-                            <span className="text-neutral-400">—</span>
-                          )}
-                        </td>
-                      </>
-                    )}
+                      )}
+                    </td>
 
                     {/* 7. Icons (Mail, Facebook, LinkedIn, GitHub) */}
                     <td className="p-3.5 text-center whitespace-nowrap">

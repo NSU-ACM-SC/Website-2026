@@ -69,7 +69,12 @@ export default async function Page({ params }: Props) {
         title="People & contributions"
         href="/members"
       />
-      <MemberDirectory membersData={roster} />
+      <MemberDirectory 
+        membersData={roster} 
+        fetchCategory="roster" 
+        rosterTeamName={teamName} 
+        rosterSigName={sigName} 
+      />
       <p className="notice">
         Current team-specific leaders, rosters, tenure history, and event
         assignments await verified chapter data.

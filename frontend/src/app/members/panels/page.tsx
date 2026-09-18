@@ -30,17 +30,18 @@ export default async function Page() {
         title="Leadership, with purpose."
         description="Meet the executive body and faculty advisors supporting the chapter."
       />
-      <SectionNav label="Member categories" items={memberSections} />
 
-      <SectionTitle number="01 / Mentorship" title="Faculty Advisors" />
-      <MemberDirectory membersData={facultyAdvisors} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" />
 
-      <SectionTitle number="02 / Leadership" title="Executive Body" />
-      <MemberDirectory membersData={executiveBody} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" />
+      <SectionTitle number="01 / Mentorship" title="Faculty Advisors" centered={true} />
+      <MemberDirectory membersData={facultyAdvisors} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" fetchCategory="panels-faculty" />
+
+      <SectionTitle number="02 / Leadership" title="Executive Body" centered={true} />
+      <MemberDirectory membersData={executiveBody} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" fetchCategory="panels-executive" />
 
       <SectionTitle
         number="03 / Responsibility"
         title="How the chapter works."
+        centered={true}
       />
       <ol className="role-list">
         {roleHierarchy.map((role, index) => (

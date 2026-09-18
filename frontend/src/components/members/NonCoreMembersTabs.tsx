@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { MemberDirectory } from "./MemberDirectory";
-import { PublicMember, getMappedCoreMembers } from "@/data/memberGroups";
+import { PublicMember, getMappedNonCoreTeamMembers } from "@/data/memberGroups";
 import { fetchChapterMembers } from "@/lib/supabaseMembers";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 
@@ -11,7 +11,7 @@ type Props = {
   teams: string[];
 };
 
-export function CoreMembersTabs({ membersData, teams }: Props) {
+export function NonCoreMembersTabs({ membersData, teams }: Props) {
   const [liveData, setLiveData] = useState<PublicMember[]>(membersData);
   const [positionFilter, setPositionFilter] = useState<string>("All");
   const [teamFilter, setTeamFilter] = useState<string>("All");
@@ -20,18 +20,19 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
     async function load() {
       const { members, isLiveSupabase } = await fetchChapterMembers();
       if (isLiveSupabase && members && members.length > 0) {
-        setLiveData(getMappedCoreMembers(members));
+        setLiveData(getMappedNonCoreTeamMembers(members));
       }
     }
     load();
   }, []);
 
   const filterMember = (member: PublicMember, role: string, team: string) => {
-    return member.teamRole === role && member.team === team;
+    return member.teamRole && member.teamRole.includes(role) && member.team === team;
   };
 
-  const showSubExecutives = positionFilter === "All" || positionFilter === "Sub Executive";
-  const showInCharges = positionFilter === "All" || positionFilter === "InCharge";
+  const showSeniors = positionFilter === "All" || positionFilter === "Senior Member";
+  const showGenerals = positionFilter === "All" || positionFilter === "General Member";
+  const showProbationary = positionFilter === "All" || positionFilter === "Probationary Member";
 
   const renderSection = (title: string, role: string, number: string) => {
     const teamsToRender = teamFilter === "All" ? teams : [teamFilter];
@@ -76,8 +77,9 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
           Position
           <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)}>
             <option value="All">All Positions</option>
-            <option value="Sub Executive">Sub-Executives</option>
-            <option value="InCharge">In-Charges</option>
+            <option value="Senior Member">Senior Members</option>
+            <option value="General Member">General Members</option>
+            <option value="Probationary Member">Probationary Members</option>
           </select>
         </label>
         
@@ -93,10 +95,11 @@ export function CoreMembersTabs({ membersData, teams }: Props) {
       </div>
 
       <div className="mt-4">
-        {showSubExecutives && renderSection("Sub-Executives", "Sub Executive", "01 / Leadership")}
-        {showInCharges && renderSection("In-Charges", "InCharge", "02 / Leadership")}
+        {showSeniors && renderSection("Senior Members", "Senior Member", "01 / Teams")}
+        {showGenerals && renderSection("General Members", "General Member", "02 / Teams")}
+        {showProbationary && renderSection("Probationary Members", "Probationary Member", "03 / Teams")}
         
-        {(!showSubExecutives && !showInCharges) || (showSubExecutives && renderSection("Sub-Executives", "Sub Executive", "01 / Leadership") === null && showInCharges && renderSection("In-Charges", "InCharge", "02 / Leadership") === null) ? (
+        {(!showSeniors && !showGenerals && !showProbationary) || (showSeniors && renderSection("Senior Members", "Senior Member", "01 / Teams") === null && showGenerals && renderSection("General Members", "General Member", "02 / Teams") === null && showProbationary && renderSection("Probationary Members", "Probationary Member", "03 / Teams") === null) ? (
           <div className="empty-state text-center py-12">
             <h2>No members found.</h2>
             <p>Try clearing your filters.</p>
