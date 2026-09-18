@@ -16,16 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { fetchChapterMembers } from "@/lib/supabaseMembers";
-import {
-  getMappedPanelMembers,
-  getMappedCoreMembers,
-  getMappedNonCoreTeamMembers,
-  getMappedNonCoreSigMembers,
-  getMappedAlumniMembers,
-  getMappedAllMembers,
-} from "@/data/memberGroups";
+import { useState } from "react";
 
 type Props = {
   membersData: PublicMember[];
@@ -34,17 +25,6 @@ type Props = {
   centerCardContent?: boolean;
   overrideTeamName?: string;
   activeSigContext?: string;
-  fetchCategory?: 
-    | "panels-faculty" 
-    | "panels-executive" 
-    | "core-team" 
-    | "core-sig" 
-    | "non-core-team" 
-    | "non-core-sig" 
-    | "alumni" 
-    | "roster";
-  rosterTeamName?: string;
-  rosterSigName?: string;
 };
 
 function valuesFor(
@@ -69,55 +49,7 @@ export function MemberDirectory({
   centerCardContent = false,
   overrideTeamName,
   activeSigContext,
-  fetchCategory,
-  rosterTeamName,
-  rosterSigName,
 }: Props) {
-  const [liveMembersData, setLiveMembersData] = useState<PublicMember[]>(membersData);
-  const [mountTime] = useState(() => Date.now());
-
-  useEffect(() => {
-    async function loadLiveMembers() {
-      if (!fetchCategory) return;
-      const { members, isLiveSupabase } = await fetchChapterMembers();
-      if (!isLiveSupabase || !members || members.length === 0) return;
-
-      let updated: PublicMember[] = [];
-      switch (fetchCategory) {
-        case "panels-faculty":
-          updated = getMappedPanelMembers(members).filter(m => m.chapterRole === "Faculty Advisor");
-          break;
-        case "panels-executive":
-          updated = getMappedPanelMembers(members).filter(m => m.chapterRole !== "Faculty Advisor");
-          break;
-        case "core-team":
-        case "core-sig":
-          updated = getMappedCoreMembers(members);
-          break;
-        case "non-core-team":
-          updated = getMappedNonCoreTeamMembers(members);
-          break;
-        case "non-core-sig":
-          updated = getMappedNonCoreSigMembers(members);
-          break;
-        case "alumni":
-          updated = getMappedAlumniMembers(members);
-          break;
-        case "roster":
-          updated = getMappedAllMembers(members).filter((member) =>
-            rosterTeamName
-              ? member.team === rosterTeamName
-              : member.sigs.some((sig) => sig.name === rosterSigName)
-          );
-          break;
-      }
-      if (updated.length > 0) {
-        setLiveMembersData(updated);
-      }
-    }
-    loadLiveMembers();
-  }, [fetchCategory, rosterTeamName, rosterSigName]);
-
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [sort, setSort] = useState("role");
@@ -128,7 +60,7 @@ export function MemberDirectory({
     { key: "sigs", label: "SIG" },
     { key: "status", label: "Status" },
   ] as const;
-  const filtered = liveMembersData
+  const filtered = membersData
     .filter(
       (member) =>
         [
@@ -239,7 +171,7 @@ export function MemberDirectory({
                   <option value="">All</option>
                   {[
                     ...new Set(
-                      liveMembersData.flatMap((member) => valuesFor(member, key)),
+                      membersData.flatMap((member) => valuesFor(member, key)),
                     ),
                   ]
                     .sort()
@@ -311,7 +243,7 @@ export function MemberDirectory({
               <div className="relative w-full aspect-[1/1] border-b-[3px] border-black bg-gray-200 shrink-0">
                 {member.photoUrl ? (
                   <Image
-                    src={member.photoUrl.includes('?') ? member.photoUrl : `${member.photoUrl}?v=${mountTime}`}
+                    src={member.photoUrl}
                     alt={member.name}
                     fill
                     className="object-cover object-top"

@@ -33,10 +33,10 @@ export default async function Page() {
 
 
       <SectionTitle number="01 / Mentorship" title="Faculty Advisors" centered={true} />
-      <MemberDirectory membersData={facultyAdvisors} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" fetchCategory="panels-faculty" />
+      <MemberDirectory membersData={facultyAdvisors} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" />
 
       <SectionTitle number="02 / Leadership" title="Executive Body" centered={true} />
-      <MemberDirectory membersData={executiveBody} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" fetchCategory="panels-executive" />
+      <MemberDirectory membersData={executiveBody} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" />
 
       <SectionTitle
         number="03 / Responsibility"
