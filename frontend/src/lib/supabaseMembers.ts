@@ -90,40 +90,37 @@ export function normalizeExecutivePosition(
   return undefined;
 }
 
-export function normalizeTeamPosition(pos?: string | null): TeamPosition {
-  if (!pos) return "General Member";
+function normalizeSingleTeamPosition(pos: string): TeamPosition {
   const clean = pos.trim().toLowerCase();
-  if (
-    clean === "sub-executive" ||
-    clean === "sub executive" ||
-    clean === "sub_executive"
-  )
+  if (clean === "sub-executive" || clean === "sub executive" || clean === "sub_executive")
     return "Sub-Executive";
   if (clean === "in-charge" || clean === "incharge" || clean === "in charge")
     return "In-Charge";
   if (clean === "senior member" || clean === "senior") return "Senior Member";
-  if (clean === "general member" || clean === "general")
-    return "General Member";
-  if (
-    clean === "probationary member" ||
-    clean === "probationary" ||
-    clean === "probation"
-  )
+  if (clean === "general member" || clean === "general") return "General Member";
+  if (clean === "probationary member" || clean === "probationary" || clean === "probation")
     return "Probationary Member";
   return "General Member";
 }
 
-export function normalizeSIGPosition(pos?: string | null): SIGPosition {
+export function normalizeTeamPosition(pos?: string | null): TeamPosition | string {
   if (!pos) return "General Member";
+  return pos.split(",").map(normalizeSingleTeamPosition).join(", ");
+}
+
+function normalizeSingleSIGPosition(pos: string): SIGPosition {
   const clean = pos.trim().toLowerCase();
   if (clean === "coordinator") return "Coordinator";
   if (clean === "moderator") return "Moderator";
   if (clean === "senior member" || clean === "senior") return "Senior Member";
-  if (clean === "general member" || clean === "general")
-    return "General Member";
-  if (clean === "probationary member" || clean === "probationary")
-    return "Probationary Member";
+  if (clean === "general member" || clean === "general") return "General Member";
+  if (clean === "probationary member" || clean === "probationary") return "Probationary Member";
   return "General Member";
+}
+
+export function normalizeSIGPosition(pos?: string | null): SIGPosition | string {
+  if (!pos) return "General Member";
+  return pos.split(",").map(normalizeSingleSIGPosition).join(", ");
 }
 
 export interface FetchResult {
