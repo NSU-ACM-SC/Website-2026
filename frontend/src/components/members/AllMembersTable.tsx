@@ -526,21 +526,8 @@ export function AllMembersTable() {
             )}
           </div>
 
-          {/* Hierarchy Sort Button & Reset */}
+          {/* Reset Button */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleSortToggle("hierarchy")}
-              className={`px-3 py-2.5 text-xs font-bold uppercase tracking-wider border-2 border-black transition-all flex items-center gap-1.5 ${sortField === "hierarchy"
-                ? "bg-black text-white neo-shadow-sm"
-                : "bg-white hover:bg-neutral-100 text-black"
-                }`}
-              title="Sort by official chapter hierarchy: EB -> Sub-Exec / Coord -> In-Charge / Mod -> Members"
-            >
-              <Crown size={14} className="text-[#ffde59]" />
-              <span>Hierarchy Order</span>
-              {sortField === "hierarchy" && renderSortIndicator("hierarchy")}
-            </button>
-
             {hasActiveFilters && (
               <button
                 onClick={handleReset}
@@ -554,39 +541,13 @@ export function AllMembersTable() {
           </div>
         </div>
 
-        {/* Quick Category Chips */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-neutral-500 mr-1">
-            Category:
-          </span>
-          {[
-            { key: "all", label: "All Members" },
-            { key: "executive", label: "Executive Body" },
-            { key: "advisor", label: "Faculty Advisor" },
-            { key: "core", label: "Core Leaders" },
-            { key: "general", label: "General Members" },
-          ].map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => {
-                setCategoryFilter(cat.key as any);
-                setPage(1);
-              }}
-              className={`px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 transition-all ${categoryFilter === cat.key
-                ? "bg-[#f47b2b] text-white border-black neo-shadow-sm -translate-y-0.5"
-                : "bg-white text-black border-neutral-300 hover:border-black"
-                }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
+
 
         {/* Multi-Criteria Filters Bar */}
         <div className="p-4 bg-white border-2 border-black neo-shadow-sm space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-black">
             <Filter size={14} className="text-[#f47b2b]" />
-            <span>Refine Filters</span>
+            <span>Filters</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
@@ -637,7 +598,7 @@ export function AllMembersTable() {
             {/* Team Position Filter */}
             <div className="space-y-1">
               <label className="block font-bold text-neutral-700 uppercase tracking-wider">
-                Team Position (Order)
+                Team Position
               </label>
               <select
                 value={teamPositionFilter}
@@ -681,7 +642,7 @@ export function AllMembersTable() {
             {/* SIG Position Filter */}
             <div className="space-y-1">
               <label className="block font-bold text-neutral-700 uppercase tracking-wider">
-                SIG Position (Order)
+                SIG Position
               </label>
               <select
                 value={sigPositionFilter}
