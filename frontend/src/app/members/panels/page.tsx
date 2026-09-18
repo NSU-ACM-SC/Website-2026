@@ -32,15 +32,16 @@ export default async function Page() {
       />
       <SectionNav label="Member categories" items={memberSections} />
 
-      <SectionTitle number="01 / Mentorship" title="Faculty Advisors" />
+      <SectionTitle number="01 / Mentorship" title="Faculty Advisors" centered={true} />
       <MemberDirectory membersData={facultyAdvisors} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" />
 
-      <SectionTitle number="02 / Leadership" title="Executive Body" />
+      <SectionTitle number="02 / Leadership" title="Executive Body" centered={true} />
       <MemberDirectory membersData={executiveBody} showControls={false} centerCardContent={true} overrideTeamName="NSU ACM SC" />
 
       <SectionTitle
         number="03 / Responsibility"
         title="How the chapter works."
+        centered={true}
       />
       <ol className="role-list">
         {roleHierarchy.map((role, index) => (

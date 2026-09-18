@@ -10,8 +10,6 @@ import {
 import {
   ArrowUpRight,
   Download,
-  LayoutGrid,
-  List,
   RotateCcw,
   Search,
   Mail,
@@ -19,7 +17,6 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { PublicMemberTable } from "./PublicMemberTable";
 
 type Props = {
   membersData: PublicMember[];
@@ -55,8 +52,6 @@ export function MemberDirectory({
 }: Props) {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const [view, setView] = useState(defaultView);
-  const [page, setPage] = useState(1);
   const [sort, setSort] = useState("role");
   const fields = [
     { key: "team", label: "Team" },
@@ -91,13 +86,11 @@ export function MemberDirectory({
           ? b.joinYear - a.joinYear || a.name.localeCompare(b.name)
           : a.name.localeCompare(b.name),
     );
-  const pages = Math.max(1, Math.ceil(filtered.length / 9));
-  const visible = filtered.slice((page - 1) * 9, page * 9);
+  const visible = filtered;
   function reset() {
     setQuery("");
     setFilters({});
     setSort("role");
-    setPage(1);
   }
   function exportCsv() {
     const cell = (value: string | number) =>
@@ -138,9 +131,6 @@ export function MemberDirectory({
   }
   return (
     <section aria-label="Member directory">
-      <p className="notice">
-        Preview roster. Roles and group assignments await chapter confirmation.
-      </p>
       {showControls && (
         <>
           <div className="directory-toolbar">
@@ -152,7 +142,6 @@ export function MemberDirectory({
                 value={query}
                 onChange={(event) => {
                   setQuery(event.target.value);
-                  setPage(1);
                 }}
               />
             </label>
@@ -177,7 +166,6 @@ export function MemberDirectory({
                   value={filters[key] || ""}
                   onChange={(event) => {
                     setFilters({ ...filters, [key]: event.target.value });
-                    setPage(1);
                   }}
                 >
                   <option value="">All</option>
@@ -199,7 +187,6 @@ export function MemberDirectory({
                 value={sort}
                 onChange={(event) => {
                   setSort(event.target.value);
-                  setPage(1);
                 }}
               >
                 <option value="name">Name A–Z</option>
@@ -210,26 +197,13 @@ export function MemberDirectory({
           </div>
         </>
       )}
-      <div className="directory-toolbar">
-        <p className="result-count" aria-live="polite">
-          {filtered.length} members · Page {page} of {pages}
+      <div 
+        className={`directory-toolbar ${centerCardContent ? 'border-none mb-6' : ''}`}
+        style={centerCardContent ? { justifyContent: 'center' } : undefined}
+      >
+        <p className={`result-count ${centerCardContent ? 'text-center w-full' : ''}`} aria-live="polite">
+          {filtered.length} members
         </p>
-        <div className="filter-tabs">
-          <button
-            aria-label="Card view"
-            aria-pressed={view === "cards"}
-            onClick={() => setView("cards")}
-          >
-            <LayoutGrid size={18} />
-          </button>
-          <button
-            aria-label="Table view"
-            aria-pressed={view === "table"}
-            onClick={() => setView("table")}
-          >
-            <List size={18} />
-          </button>
-        </div>
       </div>
       {!visible.length ? (
         <div className="empty-state">
@@ -239,8 +213,6 @@ export function MemberDirectory({
             Reset filters
           </button>
         </div>
-      ) : view === "table" ? (
-        <PublicMemberTable members={visible} />
       ) : (
         <div
           className={`grid gap-6 ${
@@ -369,17 +341,6 @@ export function MemberDirectory({
           ))}
         </div>
       )}
-      <nav className="pagination" aria-label="Member pages">
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Previous
-        </button>
-        <span>
-          {page} / {pages}
-        </span>
-        <button disabled={page >= pages} onClick={() => setPage(page + 1)}>
-          Next
-        </button>
-      </nav>
     </section>
   );
 }
