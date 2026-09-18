@@ -47,22 +47,30 @@ async function getMember(id: string) {
       ? supaMember.executivePosition!
       : supaMember.teamPosition || "General Member";
 
-    const sigs =
-      supaMember.sig && supaMember.sig !== "—" && supaMember.sig !== "None"
-        ? [{ name: supaMember.sig, role: supaMember.sigPosition || "Member" }]
+    let sigs: { name: string; role: string }[] = [];
+    if (supaMember.sig && supaMember.sig !== "—" && supaMember.sig !== "None") {
+      const sigNames = supaMember.sig.split(",").map((s: string) => s.trim());
+      const sigRoles = supaMember.sigPosition 
+        ? supaMember.sigPosition.split(",").map((r: string) => r.trim())
         : [];
+      
+      sigs = sigNames.map((name: string, index: number) => ({
+        name,
+        role: sigRoles[index] || "Member"
+      }));
+    }
 
     return {
       id: supaMember.nsuId,
       nsuId: supaMember.nsuId,
       name: supaMember.name,
-      team: supaMember.team,
+      team: isExecutive ? "Executive Body" : supaMember.team,
       teamRole: supaMember.teamPosition,
       chapterRole: supaMember.executivePosition || undefined,
       position,
       sigs,
       joinYear: supaMember.semesterJoined || "Member",
-      status: isExecutive ? "Executive" : supaMember.status || "Active",
+      status: supaMember.status === "Executive" ? "Active" : supaMember.status || "Active",
       email: supaMember.email,
       facebook: supaMember.facebook,
       linkedin: supaMember.linkedin,
@@ -80,15 +88,15 @@ async function getMember(id: string) {
       id: fallback.nsuId || fallback.id,
       nsuId: fallback.nsuId,
       name: fallback.name,
-      team: fallback.team,
+      team: fallback.chapterRole || fallback.status === "Executive" ? "Executive Body" : fallback.team,
       teamRole: fallback.teamRole,
       chapterRole: fallback.chapterRole,
       position: fallback.position,
       sigs: fallback.sigs.map((sig) => ({ name: sig.name, role: sig.role })),
       joinYear: String(fallback.joinYear),
-      status: fallback.status,
+      status: fallback.status === "Executive" ? "Active" : fallback.status,
       email: fallback.nsuEmail || fallback.personalEmail,
-      facebook: undefined,
+      facebook: (fallback as any).facebook,
       linkedin: fallback.linkedin,
       github: fallback.github,
       photoUrl: fallback.avatar,
@@ -134,7 +142,7 @@ export default async function Page({ params }: Props) {
         <div className="grid grid-cols-1 gap-6">
           {/* Top Profile Info */}
           <div className="flex flex-col md:flex-row gap-8 p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
-            <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 border-[3px] border-black overflow-hidden bg-gray-300 relative">
+            <div className="w-40 h-40 md:w-56 md:h-56 shrink-0 border-[3px] border-black overflow-hidden bg-gray-300 relative">
               {member.photoUrl ? (
                 <Image
                   src={member.photoUrl}
@@ -158,17 +166,17 @@ export default async function Page({ params }: Props) {
                 {member.name}
               </h2>
               <div className="flex flex-wrap gap-2 mt-1">
-                {member.position && (
-                  <span className="bg-black text-[#f1eee7] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
+                {member.position && member.position !== "None" && (
+                  <span className="bg-[#f47b2b] text-white border-2 border-[#f47b2b] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
                     {member.position}
                   </span>
                 )}
-                {member.team && (
-                  <span className="bg-black text-[#f1eee7] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
+                {member.team && member.team !== "None" && (
+                  <span className="bg-[#3392cc] text-white border-2 border-[#3392cc] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
                     {member.team}
                   </span>
                 )}
-                {member.chapterRole && (
+                {member.chapterRole && member.chapterRole !== "None" && member.chapterRole !== member.position && (
                   <span className="bg-transparent text-black border-2 border-black px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
                     {member.chapterRole}
                   </span>
@@ -180,6 +188,16 @@ export default async function Page({ params }: Props) {
                   ` Active in ${member.sigs.map((s) => s.name).join(", ")}.`}
               </p>
               <div className="flex flex-wrap gap-3 mt-4">
+                {member.facebook && (
+                  <a
+                    href={member.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
+                  >
+                    <FacebookIcon size={14} /> Facebook
+                  </a>
+                )}
                 {member.github && (
                   <a
                     href={member.github}
@@ -200,12 +218,6 @@ export default async function Page({ params }: Props) {
                     <LinkedinIcon size={14} /> LinkedIn
                   </a>
                 )}
-                <a
-                  href="#"
-                  className="group inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
-                >
-                  <span className="text-[#3392cc] font-black text-sm group-hover:text-white">@</span> Portfolio
-                </a>
                 {member.email && (
                   <a
                     href={`mailto:${member.email}`}
@@ -214,18 +226,13 @@ export default async function Page({ params }: Props) {
                     <Mail size={14} /> Email
                   </a>
                 )}
-                <button
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black text-black font-bold text-xs shadow-[2px_2px_0px_#000] hover:bg-[#f47b2b] hover:text-white transition-colors uppercase"
-                >
-                  Share Profile
-                </button>
               </div>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="md:col-span-1 p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
               <span className="text-4xl font-extrabold text-[#3392cc] mb-1">
                 {contributions.length || 0}
               </span>
@@ -233,29 +240,34 @@ export default async function Page({ params }: Props) {
                 Contributions
               </span>
             </div>
-            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+            <div className="md:col-span-1 p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
               <span className="text-4xl font-extrabold text-[#3392cc] mb-1">
-                {member.joinYear.replace(/[^0-9]/g, "").substring(0, 4) || "—"}
+                {String(member.joinYear).replace(/[^0-9]/g, "").substring(0, 4) || "—"}
               </span>
               <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
                 Joined
               </span>
             </div>
-            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
-              <span className="text-4xl font-extrabold text-[#3392cc] mb-1 truncate" title={member.team}>
-                {member.team || "None"}
+            <div className="md:col-span-2 p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+              <span 
+                className={`font-extrabold text-[#3392cc] mb-1 leading-tight line-clamp-2 ${
+                  member.team && member.team.length > 10 ? "text-2xl md:text-[26px]" : "text-4xl"
+                }`} 
+                title={member.team && member.team !== "None" ? member.team : "N/A"}
+              >
+                {member.team && member.team !== "None" ? member.team : "—"}
               </span>
               <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
                 Team
               </span>
             </div>
-            <div className="p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
+            <div className="md:col-span-1 p-5 flex flex-col justify-center bg-[#f1eee7] border-[3px] border-black shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200">
               <span className="text-4xl font-extrabold text-[#3392cc] mb-1 truncate">
                 {member.status === "Executive"
-                  ? "Exec"
+                  ? "Active"
                   : member.status === "Alumni"
                     ? "Alum"
-                    : "Active"}
+                    : member.status || "Active"}
               </span>
               <span className="text-[11px] font-bold uppercase tracking-wide text-gray-700">
                 Status
@@ -264,9 +276,9 @@ export default async function Page({ params }: Props) {
           </div>
 
           {/* Bottom Split Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {/* Activity Log */}
-            <div className="md:col-span-2 p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
+            <div className="md:col-span-3 p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
               <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">
                 Activity Log
               </h3>
@@ -305,16 +317,16 @@ export default async function Page({ params }: Props) {
             </div>
 
             {/* Contact & Badges */}
-            <div className="flex flex-col gap-6">
+            <div className="md:col-span-2 flex flex-col gap-6">
               <div className="p-6 md:p-8 bg-[#f1eee7] border-[3px] border-black shadow-[6px_6px_0px_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 transition-all duration-200 flex flex-col gap-4">
                 <h3 className="text-[15px] font-extrabold uppercase border-b-[3px] border-black pb-3 tracking-wide">
                   Contact & Personal Details
                 </h3>
                 <div className="flex flex-col gap-3.5 text-[13px] font-bold text-gray-800 mt-2">
                   {member.email && (
-                    <div className="flex items-center gap-3">
-                      <span className="text-base grayscale opacity-70 w-5 text-center">✉️</span> 
-                      <span className="break-all">{member.email}</span>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <span className="text-base grayscale opacity-70 w-5 shrink-0 text-center">✉️</span> 
+                      <span className="truncate" title={member.email}>{member.email}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-3">
@@ -341,17 +353,19 @@ export default async function Page({ params }: Props) {
                   Badges
                 </h3>
                 <div className="flex flex-col gap-2.5 mt-2">
-                  <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2">
-                    ⭐ {member.status}
-                  </div>
-                  {member.team && (
-                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2">
+                  {member.status && member.status !== "None" && (
+                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2 w-fit">
+                      ⭐ {member.status}
+                    </div>
+                  )}
+                  {member.team && member.team !== "None" && (
+                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2 w-fit">
                       🛠️ {member.team}
                     </div>
                   )}
-                  {member.chapterRole && (
-                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2">
-                      🏆 Core Member
+                  {member.chapterRole && member.chapterRole !== "None" && (
+                    <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2 w-fit">
+                      🏆 {member.chapterRole === "Chair" || member.chapterRole === "Vice Chair" || member.chapterRole === "Secretary" || member.chapterRole === "Treasurer" ? "Core Member" : "Leader"}
                     </div>
                   )}
                 </div>
