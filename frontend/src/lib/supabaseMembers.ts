@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/client";
 export type ExecutivePosition =
   | "Faculty Advisor"
   | "Chair"
-  | "Vice-Chair"
+  | "Vice Chair"
   | "Secretary"
   | "Treasurer"
   | "Membership Chair"
@@ -44,7 +44,7 @@ export interface ChapterMember {
 export const EXECUTIVE_POSITIONS_ORDER: ExecutivePosition[] = [
   "Faculty Advisor",
   "Chair",
-  "Vice-Chair",
+  "Vice Chair",
   "Secretary",
   "Treasurer",
   "Membership Chair",
@@ -81,7 +81,7 @@ export function normalizeExecutivePosition(
     clean === "vice chair" ||
     clean === "vice_chair"
   )
-    return "Vice-Chair";
+    return "Vice Chair";
   if (clean === "secretary") return "Secretary";
   if (clean === "treasurer") return "Treasurer";
   if (clean === "membership chair" || clean === "membership_chair")

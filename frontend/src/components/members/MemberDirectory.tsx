@@ -3,18 +3,32 @@
 import type { PublicMember } from "@/data/memberGroups";
 import { roleOrder } from "@/data/teamsData";
 import {
+  FacebookIcon,
+  GithubIcon,
+  LinkedinIcon,
+} from "@/components/ui/SocialIcons";
+import {
   ArrowUpRight,
   Download,
   LayoutGrid,
   List,
   RotateCcw,
   Search,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { PublicMemberTable } from "./PublicMemberTable";
 
-type Props = { membersData: PublicMember[]; defaultView?: "cards" | "table" };
+type Props = {
+  membersData: PublicMember[];
+  defaultView?: "cards" | "table";
+  showControls?: boolean;
+  centerCardContent?: boolean;
+  overrideTeamName?: string;
+  activeSigContext?: string;
+};
 
 function valuesFor(
   member: PublicMember,
@@ -31,7 +45,14 @@ function valuesFor(
   return [String(member[key])];
 }
 
-export function MemberDirectory({ membersData, defaultView = "cards" }: Props) {
+export function MemberDirectory({
+  membersData,
+  defaultView = "cards",
+  showControls = true,
+  centerCardContent = false,
+  overrideTeamName,
+  activeSigContext,
+}: Props) {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [view, setView] = useState(defaultView);
@@ -65,7 +86,7 @@ export function MemberDirectory({ membersData, defaultView = "cards" }: Props) {
     .sort((a, b) =>
       sort === "role"
         ? roleOrder.indexOf(a.position) - roleOrder.indexOf(b.position) ||
-          a.name.localeCompare(b.name)
+        a.name.localeCompare(b.name)
         : sort === "year"
           ? b.joinYear - a.joinYear || a.name.localeCompare(b.name)
           : a.name.localeCompare(b.name),
@@ -120,71 +141,75 @@ export function MemberDirectory({ membersData, defaultView = "cards" }: Props) {
       <p className="notice">
         Preview roster. Roles and group assignments await chapter confirmation.
       </p>
-      <div className="directory-toolbar">
-        <label className="search-field">
-          <Search size={18} aria-hidden="true" />
-          <input
-            aria-label="Search members"
-            placeholder="Search names, teams, roles or interests"
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setPage(1);
-            }}
-          />
-        </label>
-        <button className="outline-button" onClick={reset}>
-          <RotateCcw size={16} />
-          Reset
-        </button>
-        <button
-          className="outline-button"
-          onClick={exportCsv}
-          disabled={!filtered.length}
-        >
-          <Download size={16} />
-          Export CSV
-        </button>
-      </div>
-      <div className="directory-filters">
-        {fields.map(({ key, label }) => (
-          <label className="select-field" key={key}>
-            {label}
-            <select
-              value={filters[key] || ""}
-              onChange={(event) => {
-                setFilters({ ...filters, [key]: event.target.value });
-                setPage(1);
-              }}
+      {showControls && (
+        <>
+          <div className="directory-toolbar">
+            <label className="search-field">
+              <Search size={18} aria-hidden="true" />
+              <input
+                aria-label="Search members"
+                placeholder="Search names, teams, roles or interests"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setPage(1);
+                }}
+              />
+            </label>
+            <button className="outline-button" onClick={reset}>
+              <RotateCcw size={16} />
+              Reset
+            </button>
+            {/* <button
+              className="outline-button"
+              onClick={exportCsv}
+              disabled={!filtered.length}
             >
-              <option value="">All</option>
-              {[
-                ...new Set(
-                  membersData.flatMap((member) => valuesFor(member, key)),
-                ),
-              ]
-                .sort()
-                .map((value) => (
-                  <option key={value}>{value}</option>
-                ))}
-            </select>
-          </label>
-        ))}
-        <label className="select-field">
-          Sort
-          <select
-            value={sort}
-            onChange={(event) => {
-              setSort(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="name">Name A–Z</option>
-            <option value="year">Newest joined</option>
-            <option value="role">Role hierarchy</option>
-          </select>
-        </label>
-      </div>
+              <Download size={16} />
+              Export CSV
+            </button> */}
+          </div>
+          <div className="directory-filters">
+            {fields.map(({ key, label }) => (
+              <label className="select-field" key={key}>
+                {label}
+                <select
+                  value={filters[key] || ""}
+                  onChange={(event) => {
+                    setFilters({ ...filters, [key]: event.target.value });
+                    setPage(1);
+                  }}
+                >
+                  <option value="">All</option>
+                  {[
+                    ...new Set(
+                      membersData.flatMap((member) => valuesFor(member, key)),
+                    ),
+                  ]
+                    .sort()
+                    .map((value) => (
+                      <option key={value}>{value}</option>
+                    ))}
+                </select>
+              </label>
+            ))}
+            <label className="select-field">
+              Sort
+              <select
+                value={sort}
+                onChange={(event) => {
+                  setSort(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="name">Name A–Z</option>
+                <option value="year">Newest joined</option>
+                <option value="role">Role hierarchy</option>
+              </select>
+            </label>
+          </div>
+        </>
+      )}
       <div className="directory-toolbar">
         <p className="result-count" aria-live="polite">
           {filtered.length} members · Page {page} of {pages}
@@ -217,42 +242,128 @@ export function MemberDirectory({ membersData, defaultView = "cards" }: Props) {
       ) : view === "table" ? (
         <PublicMemberTable members={visible} />
       ) : (
-        <div className="profile-grid">
+        <div
+          className={`grid gap-6 ${
+            visible.length === 1
+              ? "grid-cols-1 max-w-sm mx-auto w-full"
+              : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+          }`}
+        >
           {visible.map((member) => (
             <Link
               href={`/members/${member.id}`}
-              className="profile-card"
               key={member.id}
+              className="group flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200"
             >
-              <div className="profile-card-top">
-                <div className="profile-monogram">
-                  {member.name
-                    .split(" ")
-                    .slice(0, 2)
-                    .map((name) => name[0])
-                    .join("")}
-                </div>
-                <ArrowUpRight size={20} />
-              </div>
-              <p className="eyebrow">
-                {member.status} / {member.joinYear}
-              </p>
-              <h3>{member.name}</h3>
-              <p>
-                {member.position}
-                <br />
-                {member.team} · {member.teamRole}
-              </p>
-              <div className="tag-row">
-                {member.sigs.length ? (
-                  member.sigs.map((sig) => (
-                    <span key={sig.name}>
-                      {sig.name} · {sig.role}
-                    </span>
-                  ))
+              {/* Top Image Section */}
+              <div className="relative w-full aspect-[1/1] border-b-[3px] border-black bg-gray-200 shrink-0">
+                {member.photoUrl ? (
+                  <Image
+                    src={member.photoUrl}
+                    alt={member.name}
+                    fill
+                    className="object-cover object-top"
+                    unoptimized
+                  />
                 ) : (
-                  <span>No SIG</span>
+                  <div className="w-full h-full flex items-center justify-center text-5xl font-black text-black">
+                    {member.name.split(" ").slice(0, 2).map((n) => n[0]).join("")}
+                  </div>
                 )}
+
+                {/* Floating Pill Tag (Top Right) */}
+                {member.sigs.length > 0 && (
+                  <div className="absolute top-4 right-4 bg-white text-black border-2 border-black rounded-full font-bold text-[10px] px-3 py-1 shadow-[2px_2px_0px_#000] uppercase tracking-wide z-10">
+                    SIG / {activeSigContext || member.sigs[0].name}
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Content Section */}
+              <div className={`flex flex-col flex-1 p-6 ${centerCardContent ? 'text-center' : ''}`}>
+                {/* Name and Subtitle */}
+                <h3 className="text-2xl md:text-3xl font-black leading-[1.1] tracking-tighter capitalize mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  {member.name}
+                </h3>
+                <div className="font-sans text-[13px] font-medium text-gray-800 mb-5 flex flex-col gap-0.5">
+                  {activeSigContext ? (
+                    <>
+                      {/* Priority SIG context */}
+                      {member.sigs
+                        .filter((sig) => sig.name === activeSigContext)
+                        .map((sig, idx) => (
+                          <p key={`primary-${idx}`} className="font-bold">
+                            {sig.role} {sig.name}
+                          </p>
+                        ))}
+                      {/* Show other SIGs if any */}
+                      {member.sigs
+                        .filter((sig) => sig.name !== activeSigContext)
+                        .map((sig, idx) => (
+                          <p key={`other-${idx}`}>
+                            {sig.role} {sig.name}
+                          </p>
+                        ))}
+                      {/* Show Team role underneath */}
+                      <p>
+                        {member.chapterRole || member.teamRole || "Member"}
+                        {overrideTeamName
+                          ? `, ${overrideTeamName}`
+                          : member.team && (member.team as string) !== "—"
+                          ? `, ${member.team}`
+                          : ""}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      {/* Default layout */}
+                      <p>
+                        {member.chapterRole || member.teamRole || "Member"}
+                        {overrideTeamName
+                          ? `, ${overrideTeamName}`
+                          : member.team && (member.team as string) !== "—"
+                          ? `, ${member.team}`
+                          : ""}
+                      </p>
+                      {member.sigs.length > 0 &&
+                        member.sigs.map((sig, idx) => (
+                          <p key={idx}>
+                            {sig.role} {sig.name}
+                          </p>
+                        ))}
+                    </>
+                  )}
+                </div>
+
+                {/* Spacer to push footer to bottom */}
+                <div className="mt-auto">
+                  {/* Divider */}
+                  <div className="h-[2px] bg-black w-full mb-4"></div>
+
+                  {/* Social Links Row in Footer */}
+                  <div className={`flex gap-3 min-h-[36px] ${centerCardContent ? 'justify-center' : ''}`}>
+                    {member.github && (
+                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="GitHub">
+                        <GithubIcon size={18} />
+                      </div>
+                    )}
+                    {member.linkedin && (
+                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="LinkedIn">
+                        <LinkedinIcon size={18} />
+                      </div>
+                    )}
+                    {member.facebook && (
+                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Facebook">
+                        <FacebookIcon size={18} />
+                      </div>
+                    )}
+                    {member.email && (
+                      <div className="w-9 h-9 flex items-center justify-center bg-transparent border-2 border-black rounded-lg text-black hover:bg-[#f47b2b] transition-colors" title="Email">
+                        <Mail size={18} />
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </Link>
           ))}

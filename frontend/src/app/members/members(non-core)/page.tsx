@@ -1,7 +1,8 @@
 import { MemberDirectory } from "@/components/members/MemberDirectory";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { SectionNav } from "@/components/ui/SectionNav";
-import { memberSections, nonCoreMembers } from "@/data/memberGroups";
+import { memberSections, getMappedNonCoreMembers } from "@/data/memberGroups";
+import { fetchChapterMembers } from "@/lib/supabaseMembers";
 import Link from "next/link";
 
 export const metadata = {
@@ -10,7 +11,10 @@ export const metadata = {
     "Discover active contributors learning, building, and collaborating across the chapter.",
 };
 
-export default function Page() {
+export default async function Page() {
+  const { members } = await fetchChapterMembers();
+  const nonCoreMembers = getMappedNonCoreMembers(members);
+
   return (
     <div className="site-container">
       <PageIntro

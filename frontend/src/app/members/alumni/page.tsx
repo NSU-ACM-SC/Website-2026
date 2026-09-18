@@ -1,7 +1,7 @@
 import { MemberDirectory } from "@/components/members/MemberDirectory";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { SectionNav } from "@/components/ui/SectionNav";
-import { alumniMembers, memberSections } from "@/data/memberGroups";
+import { memberSections } from "@/data/memberGroups";
 import Link from "next/link";
 
 export const metadata = {
@@ -19,7 +19,7 @@ export default function Page() {
         description="Meet former members and explore the contributions they have shared with this community."
       />
       <SectionNav label="Member categories" items={memberSections} />
-      <MemberDirectory membersData={alumniMembers} />
+      <MemberDirectory membersData={[]} showControls={false} />
       <section className="statement">
         <h2>Stay connected.</h2>
         <div>
