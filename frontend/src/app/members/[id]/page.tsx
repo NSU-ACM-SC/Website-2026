@@ -166,17 +166,17 @@ export default async function Page({ params }: Props) {
                 {member.name}
               </h2>
               <div className="flex flex-wrap gap-2 mt-1">
-                {member.position && member.position !== "None" && (
+                {member.position && (
                   <span className="bg-[#f47b2b] text-white border-2 border-[#f47b2b] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
                     {member.position}
                   </span>
                 )}
-                {member.team && member.team !== "None" && (
+                {member.team && (
                   <span className="bg-[#3392cc] text-white border-2 border-[#3392cc] px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
                     {member.team}
                   </span>
                 )}
-                {member.chapterRole && member.chapterRole !== "None" && member.chapterRole !== member.position && (
+                {member.chapterRole && member.chapterRole !== member.position && (
                   <span className="bg-transparent text-black border-2 border-black px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
                     {member.chapterRole}
                   </span>
@@ -363,7 +363,7 @@ export default async function Page({ params }: Props) {
                       🛠️ {member.team}
                     </div>
                   )}
-                  {member.chapterRole && member.chapterRole !== "None" && (
+                  {member.chapterRole && (
                     <div className="bg-black text-[#f1eee7] px-4 py-2 text-[11px] font-bold uppercase flex items-center gap-2 w-fit">
                       🏆 {member.chapterRole === "Chair" || member.chapterRole === "Vice Chair" || member.chapterRole === "Secretary" || member.chapterRole === "Treasurer" ? "Core Member" : "Leader"}
                     </div>
