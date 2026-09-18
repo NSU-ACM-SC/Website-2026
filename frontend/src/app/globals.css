@@ -34,6 +34,8 @@ body {
   color: #000000;
   font-family: var(--font-site);
   overflow-x: hidden;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Prevent the native cursor flashing before the client cursor hydrates. */
@@ -149,22 +151,7 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1eee7;
-  border-left: 2px solid #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #000000;
-  border: 2px solid #f1eee7;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #f47b2b;
+  display: none;
 }
 
 /* Words Preloader Animation */
