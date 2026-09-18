@@ -238,7 +238,7 @@ export function MemberDirectory({
                 key={member.id}
                 className={`${colClasses} group relative flex flex-col h-full bg-[#f1eee7] border-[3px] border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_#000] transition-all duration-200`}
               >
-                <Link href={`/members/${member.id}`} className="absolute inset-0 z-0" aria-label={`View ${member.name}'s profile`} />
+                <Link href={`/members/${member.id}`} className="absolute inset-0 z-10" aria-label={`View ${member.name}'s profile`} />
                 {/* Top Image Section */}
               <div className="relative w-full aspect-[1/1] border-b-[3px] border-black bg-gray-200 shrink-0">
                 {member.photoUrl ? (
@@ -325,7 +325,7 @@ export function MemberDirectory({
                 </div>
 
                 {/* Spacer to push footer to bottom */}
-                <div className="mt-auto w-full">
+                <div className="mt-auto w-full relative z-20">
                   {/* Heavy Brutalist Divider */}
                   <div className="h-[3px] bg-black w-full mb-5"></div>
 
