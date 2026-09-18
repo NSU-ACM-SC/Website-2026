@@ -192,3 +192,39 @@ body {
     opacity: 1;
   }
 }
+
+/* Logo Reveal Animation */
+@keyframes logoReveal {
+  0% { transform: translateX(101%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-logo-reveal {
+  display: inline-block;
+  animation: logoReveal 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
+/* Text Reveal Animation */
+@keyframes textReveal {
+  0% { transform: translateX(-101%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-text-reveal {
+  display: inline-block;
+  animation: textReveal 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.15s both;
+  will-change: transform, opacity;
+}
+
+/* Divider Scale Animation */
+@keyframes dividerScale {
+  0% { transform: scaleY(0); opacity: 0; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+.animate-divider-scale {
+  animation: dividerScale 0.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  will-change: transform, opacity;
+  transform-origin: center;
+}

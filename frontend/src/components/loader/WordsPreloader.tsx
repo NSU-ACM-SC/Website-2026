@@ -44,13 +44,13 @@ export function WordsPreloader({
   useEffect(() => {
     if (finished || unmounted) return;
 
-    if (index < words.length - 1) {
+    if (index < words.length) {
       const timer = setTimeout(() => {
         setIndex((prev) => prev + 1);
       }, duration);
       return () => clearTimeout(timer);
     } else {
-      // Reached the final word
+      // Reached the final state (Logo)
       // If backend data is still loading, wait until isLoading becomes false
       if (isLoading) {
         return;
@@ -59,7 +59,7 @@ export function WordsPreloader({
       const exitTimer = setTimeout(() => {
         setFinished(true);
         onComplete?.();
-      }, duration + 100);
+      }, 1500); // Give the final reveal animation time to play out
 
       return () => clearTimeout(exitTimer);
     }
@@ -80,31 +80,42 @@ export function WordsPreloader({
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-3 bg-[#FBFBFB] text-[#111111] transition-transform duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] ${finished ? "-translate-y-full pointer-events-none" : "translate-y-0"
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-3 bg-[#f1eee7] text-[#111111] transition-transform duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] ${finished ? "-translate-y-full pointer-events-none" : "translate-y-0"
         }`}
       aria-hidden="true"
     >
-
-      <Image
-        src={withBasePath("/assets/brand/acm-logo.webp")}
-        alt="ACM Logo"
-        width={500}
-        height={500}
-        priority
-        className="w-14 md:w-24 object-contain shrink-0"
-      />
-
-
-      <div className="overflow-hidden h-16 md:h-20 flex items-center justify-center w-[220px] sm:w-[280px] md:w-[380px]">
-        <span
-          key={index}
-          className="text-4xl md:text-6xl font-medium tracking-tight animate-word-slide select-none whitespace-nowrap"
-        >
-          {words[index]?.text ?? ""}
-        </span>
+      <div className="overflow-hidden h-24 md:h-32 flex items-center justify-center w-full px-4">
+        {index < words.length ? (
+          <span
+            key={index}
+            className="text-4xl md:text-6xl font-medium tracking-tight animate-word-slide select-none whitespace-nowrap"
+          >
+            {words[index]?.text ?? ""}
+          </span>
+        ) : (
+          <div className="flex items-center justify-center h-20 md:h-28">
+            <div className="overflow-hidden flex items-center justify-end pr-5 md:pr-6 h-full">
+              <Image
+                key="logo"
+                src={withBasePath("/assets/brand/acm-logo.webp")}
+                alt="ACM Logo"
+                width={400}
+                height={400}
+                priority
+                className="h-16 md:h-24 w-auto object-contain shrink-0 animate-logo-reveal"
+              />
+            </div>
+            
+            <div className="w-[3px] md:w-[4px] h-[70%] bg-[#111111] shrink-0 animate-divider-scale rounded-full"></div>
+            
+            <div className="overflow-hidden flex items-center justify-start pl-5 md:pl-6 h-full">
+              <p className="text-3xl md:text-5xl font-bold tracking-tight select-none whitespace-nowrap animate-text-reveal">
+                NSU ACM SC
+              </p>
+            </div>
+          </div>
+        )}
       </div>
-
-
     </div>
   );
 }
